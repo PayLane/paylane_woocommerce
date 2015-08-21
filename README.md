@@ -4,9 +4,9 @@ The PayLane Magento plugin allows for a seamless integration with our payment ga
 
 # Installation
 
-1. Create a folder named woocommerce-paylane in wp-content/plugins, and upload everything from the src/ directory there.
-2. In your Wordpress cockpit navigate to Plugins and activate the PayLane payment gateway plugin.
-3. Navigate to WooCommerce > Settings > Checkout > PayLane and configure your plugin.
+- Create a folder named woocommerce-paylane in wp-content/plugins, and upload everything from the src/ directory there.
+- In your Wordpress cockpit navigate to Plugins and activate the PayLane payment gateway plugin.
+- Navigate to WooCommerce > Settings > Checkout > PayLane and configure your plugin.
 
 # Official documentation 
 
