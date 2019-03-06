@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WooCommerce PayLane Gateway
  * Description: PayLane (Polskie ePłatności Online) payment module for WooCommerce.
- * Version: 2.0.3
+ * Version: 2.0.4
  * Author: Paylane (Polskie ePłatności Online)
  * Author URI: https://paylane.pl
  * Plugin URI: https://github.com/PayLane/paylane_woocommerce
@@ -16,6 +16,7 @@
 
 add_filter( 'the_posts', 'generate_error_page', -10 );
 add_filter( 'woocommerce_notice_types', 'add_paylane_notice_type' );
+add_action( 'before_woocommerce_pay', 'paylane_js_validation', 10, 0 );
 add_action( 'woocommerce_checkout_before_order_review', 'paylane_js_validation', 10, 0 );
 
 function add_paylane_notice_type( $notice_types )
@@ -342,9 +343,19 @@ function init_paylane()
 		 */
 		public function paylane_payment_style()
 		{
-			wp_register_style( 'paylane-woocommerce', plugins_url('assets/css/paylane-woocommerce-' . $this->get_option('design') . '.css', __FILE__), array(), '2019030501_' . $this->get_option('design'), 'all' );
-			wp_enqueue_style( 'paylane-woocommerce' );
-			wp_enqueue_script( 'paylane-woocommerce-script', plugin_dir_url( __FILE__ ) . 'assets/js/paylane-woocommerce.js', array(), '2019030501');
+			if (is_checkout())
+			{
+				wp_register_style(
+					'paylane-woocommerce', plugins_url(
+						'assets/css/paylane-woocommerce-' . $this->get_option('design') . '.css', __FILE__
+					), [], '204_' . $this->get_option('design'), 'all'
+				);
+				wp_enqueue_style( 'paylane-woocommerce' );
+				wp_enqueue_script(
+					'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', [],
+					'204', true
+				);
+			}
 		}
 
 		//Main function which sends data to PayLane service and get response

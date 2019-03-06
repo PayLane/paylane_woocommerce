@@ -2,7 +2,7 @@
 Tags: woocommerce, payments
 Requires at least: 3.5.1
 Tested up to: 5.0.3
-Stable tag: 2.0.2
+Stable tag: 2.0.4
 License: GPLv3
 
 == Description ==
@@ -17,3 +17,4 @@ License: GPLv3
 ## [2.0.1] - 2019-03-04
 ## [2.0.2] - 2019-03-05
 ## [2.0.3] - 2019-03-05
+## [2.0.4] - 2019-03-06
