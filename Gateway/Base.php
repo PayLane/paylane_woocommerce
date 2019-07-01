@@ -41,6 +41,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 		WC_Gateway_Paylane::PAYMENT_METHOD_SOFORT        => 'Sofort',
 		WC_Gateway_Paylane::PAYMENT_METHOD_PAYPAL        => 'PayPal',
 		WC_Gateway_Paylane::PAYMENT_METHOD_IDEAL         => 'iDEAL',
+		WC_Gateway_Paylane::PAYMENT_METHOD_APPLEPAY      => 'Apple Pay',
 	);
 
 	/**
@@ -114,7 +115,8 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
         }
 
         return $empty_value;
-    }
+	}
+	
 
 	/**
 	 * @return string
@@ -237,7 +239,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 		$order = new WC_Order($order_id);
 		$order->update_status('on-hold', __('Awaiting payment confirmation', 'wc-gateway-paylane'));
 
-		update_post_meta($order_id, '_payment_method_title', 'Paylane - ' . self::$paylane_methods[$_POST['paylane_payment_method']]);
+		update_post_meta($order_id, '_payment_method_title', 'Paylane - ' . self::$paylane_methods[$method]);
 
 		if ($this->woocommerce_version_check())
 		{
@@ -260,6 +262,30 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 					),
 					'back_url'  => $this->notify_link,
 				);
+			}elseif($method === 'apple_pay')
+			{
+				$payload = json_decode(base64_decode($_POST['paylane_apple_pay_payload']),true);
+				
+				if(is_null($payload) || !$this->isCorrectpayload($payload)){
+					wc_add_notice(__('Incorrect Apple Pay payload', 'wc-gateway-paylane'), 'error');
+					return array( 'success' => false );
+				}
+
+				$data = array(
+					'sale'     => array(
+						'amount'      => $order->get_total(),
+						'currency'    => get_woocommerce_currency(),
+						'description' => get_bloginfo('name'),
+					),
+					'customer'=>$payload['customer'],
+					'card'=>[
+						'token'=> $payload['card']['token'] 
+					],		
+					'back_url'  => $this->notify_link,
+				);
+
+				$data['customer']['ip'] = $_SERVER['REMOTE_ADDR'];
+
 			}
 			else
 			{
@@ -393,6 +419,10 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 				return 'sofort';
 				break;
 
+			case 'Paylane_Gateway_ApplePay':
+				return 'apple_pay';
+				break;
+
 			// Unsupported payment method
 			default:
 				return null;
@@ -471,6 +501,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 				break;
 
 			case "credit_card":
+				wp_enqueue_script( 'woocommerce_paylane_api_script', 'https://js.paylane.com/v1/', array() );
 				$form = $this->get_form('credit_card', array(
 					'api_key' => $this->get_option('api_key_val')
 				));
@@ -503,6 +534,10 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 				$form = $this->get_form('forms/ideal', array(
 					'banks' => $banks
 				));
+				break;
+
+			case "apple_pay":
+				$form = $this->getPreparedForm();
 				break;
 		}
 
@@ -611,7 +646,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 	 * @param array $vars
 	 * @return false|null|string
 	 */
-	private function get_form($form_name, $vars = array())
+	protected function get_form($form_name, $vars = array())
 	{
 		extract($vars);
 

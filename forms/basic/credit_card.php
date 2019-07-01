@@ -75,7 +75,7 @@ $fields = array(
 </div>
 
 <input type="hidden" id="payment_params_token" name="payment_params_token" value="">
-<script src="https://js.paylane.com/v1/"></script>
+
 <script type="text/javascript">
   //<![CDATA[
   window.addEventListener("load", function () {

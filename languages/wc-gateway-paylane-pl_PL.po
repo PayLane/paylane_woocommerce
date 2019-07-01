@@ -1,19 +1,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: woocommerce-paylane-1\n"
-"POT-Creation-Date: 2019-03-01 14:50+0000\n"
-"PO-Revision-Date: 2019-03-01 14:52+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-18 13:41+0200\n"
+"PO-Revision-Date: 2019-06-18 13:42+0200\n"
 "Last-Translator: admin <it@paylane.com>\n"
 "Language-Team: Polski\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-Basepath: woocommerce\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 "X-Poedit-KeywordsList: __;_e\n"
+"X-Loco-Version: 2.2.0; wp-5.0.3\n"
 "X-Poedit-SearchPath-0: class-wc-payment-paylane.php\n"
 "X-Poedit-SearchPath-1: newFile.php\n"
 "X-Poedit-SearchPath-2: includes/class-wc-payment-paylane.php\n"
@@ -36,221 +38,106 @@ msgstr ""
 "X-Poedit-SearchPath-19: Gateway/Secure.php\n"
 "X-Poedit-SearchPath-20: Gateway/Sepa.php\n"
 "X-Poedit-SearchPath-21: Gateway/Sofort.php\n"
-"Report-Msgid-Bugs-To: \n"
-"X-Loco-Version: 2.2.0; wp-5.0.3"
 
-#: woocommerce-gateway-paylane.php:47
-msgid "Payment Error Occurred"
-msgstr "Wystąpił błąd płatności"
+#: forms/basic/credit_card.php:14 forms/paylane/credit_card.php:5
+msgid "Card number"
+msgstr "Numer karty"
 
-#: woocommerce-gateway-paylane.php:127
-msgid "This API method is not allowed for this merchant account."
-msgstr "Ta metoda API nie jest dozwolona na tym koncie"
+#: forms/basic/credit_card.php:24 forms/paylane/credit_card.php:15
+msgid "Expiry Date"
+msgstr "Data ważności karty"
 
-#: woocommerce-gateway-paylane.php:262
-msgid "paylane"
-msgstr "paylane"
+#: forms/basic/credit_card.php:31 forms/paylane/credit_card.php:22
+msgid "MM / YY"
+msgstr "MM / RR"
 
-#: woocommerce-gateway-paylane.php:263 includes/paylane-settings.php:27
-msgid "Paylane"
-msgstr "PayLane"
+#: forms/basic/credit_card.php:34 forms/paylane/credit_card.php:25
+msgid "CVV/CVC"
+msgstr "CVV/CVC"
 
-#: woocommerce-gateway-paylane.php:437 woocommerce-gateway-paylane.php:443
-msgid "Success, id_sale:"
-msgstr "Sukces, id_sale:"
+#: forms/basic/credit_card.php:41 forms/paylane/credit_card.php:32
+msgid "CVC"
+msgstr "CVC"
 
-#: woocommerce-gateway-paylane.php:475 woocommerce-gateway-paylane.php:1047
-msgid "Error ID:"
-msgstr "ID Błędu:"
+#: forms/basic/credit_card.php:44 forms/paylane/credit_card.php:35
+msgid "Card holder name"
+msgstr "Właściciel karty"
 
-#: woocommerce-gateway-paylane.php:480 woocommerce-gateway-paylane.php:1048
-msgid "Error number:"
-msgstr "Numer błędu:"
-
-#: woocommerce-gateway-paylane.php:485 woocommerce-gateway-paylane.php:1049
-msgid "Error description:"
-msgstr "Opis błędu:"
-
-#: woocommerce-gateway-paylane.php:594 woocommerce-gateway-paylane.php:720
-msgid "Payment awaiting confirmation"
-msgstr "Transakcja oczekująca na potwierdzenie"
-
-#: woocommerce-gateway-paylane.php:606 woocommerce-gateway-paylane.php:607
-msgid "Wrong hash"
-msgstr "Błędny HASH"
-
-#: woocommerce-gateway-paylane.php:674
-msgid "Error: wrong hash"
-msgstr "Błąd: Błędny hash"
-
-#: woocommerce-gateway-paylane.php:679
-msgid "Error, 3-D auth transaction declined"
-msgstr "Błąd, Nie udana autoryzacja 3-D secure"
-
-#: woocommerce-gateway-paylane.php:702
-msgid "Error 3-D Secure payment"
-msgstr "Błąd 3-D Secure"
-
-#: woocommerce-gateway-paylane.php:847
-msgid "Order no.: "
-msgstr "Numer zamówienia:"
-
-#: woocommerce-gateway-paylane.php:868
-msgid "Check Direct Debit transaction status (SEPA)"
-msgstr "Sprawdź status transakcji (SEPA) "
-
-#: woocommerce-gateway-paylane.php:869
-msgid "Test subscription payment"
-msgstr "Testowa płatność subksrybcyjna"
-
-#: woocommerce-gateway-paylane.php:894
-msgid "PayLane transaction status: "
-msgstr "Status Transakcji"
-
-#: woocommerce-gateway-paylane.php:968
-#, php-format
-msgid "Transaction failed with reason: %s."
-msgstr "Transakcja nieudana, powód: %s. "
-
-#: woocommerce-gateway-paylane.php:977
-#, php-format
-msgid "Transaction confirmed, payment method: %s. %s"
-msgstr "Transakcja potwierdzona, metoda płatności: %s. %s"
-
-#: woocommerce-gateway-paylane.php:1050
-msgid "Refund Failed:"
-msgstr "Zwrot zakończony niepowodzeniem"
-
-#: Gateway/CreditCard.php:20 Gateway/CreditCard.php:28
-#: includes/paylane-settings.php:164 includes/paylane-settings.php:172
-msgid "Credit Card"
-msgstr "Karta płatnicza"
-
-#: Gateway/Paypal.php:20 Gateway/Paypal.php:28
-#: includes/paylane-settings.php:238
-msgid "PayPal"
-msgstr "PayPal"
-
-#: Gateway/BankTransfer.php:20 Gateway/BankTransfer.php:28
-msgid "Bank transfer"
-msgstr "Przelew bankowy"
-
-#: Gateway/Sepa.php:20 Gateway/Sepa.php:28 includes/paylane-settings.php:216
-msgid "SEPA Direct Debit"
-msgstr "Polecenie zapłaty SEPA"
-
-#: Gateway/Sofort.php:20 Gateway/Sofort.php:28
-#: includes/paylane-settings.php:227
-msgid "Sofort"
-msgstr "Sofort"
-
-#: Gateway/Base.php:268
-msgid "Unsupported payment method"
-msgstr "Ta metoda płatności jest niedostępna"
-
-#: Gateway/Base.php:280
-msgid "Awaiting payment confirmation"
-msgstr "Oczekujemy na potwierdzenie płatności"
-
-#: Gateway/Base.php:479
-msgid "Transaction complete"
-msgstr "Transakcja zakończona"
-
-#: Gateway/Base.php:484
-msgid "Refund complete"
-msgstr "Zwrot zakończony"
-
-#: Gateway/Base.php:489
-msgid "Reversal received"
-msgstr "Otrzymano Reversal"
-
-#: Gateway/Base.php:494 Gateway/Base.php:499
-msgid "Retrieval request / chargeback opened"
-msgstr "Retrieval / Chargeback rozpoczęty"
-
-#: Gateway/Base.php:568
-msgid "Card token is empty"
-msgstr "Brak tokenu karty"
-
-#: Gateway/Base.php:572
-msgid "Unrecognized or malformed token"
-msgstr "Uszkodzony token"
-
-#: Gateway/Base.php:587
-msgid "First name is empty"
-msgstr "Brak Imienia"
-
-#: Gateway/Base.php:592
-msgid "Last name is empty"
-msgstr "Podaj nazwisko"
-
-#: Gateway/Base.php:597
-msgid "Account holder name is empty"
-msgstr "Podaj imię i nazwisko"
-
-#: Gateway/Base.php:602
-msgid "Account country is empty"
+#: forms/basic/transfer.php:9 forms/basic/ideal.php:4
+#: forms/paylane/transfer.php:9 forms/paylane/ideal.php:4
+msgid "You will be redirected to your bank's website payment."
 msgstr ""
-"Podaj Kraj\n"
+"Zostaniesz przekierowany na stronę swojego banku w celu dokonania płatności"
 
-#: Gateway/Base.php:607
-msgid "IBAN is empty"
-msgstr "Numer IBAN jest pusty"
+#: forms/basic/sofort.php:4 forms/paylane/sofort.php:4
+msgid "You will be redirected to the Sofort website for payment."
+msgstr "Zostaniesz przekierowany na stronę Sofort w celu dokonania płatności"
 
-#: Gateway/Base.php:612
-msgid "BIC is empty"
-msgstr "Numer BIC jest pusty"
+#: forms/basic/sepa.php:5 forms/paylane/sepa.php:5
+msgid "Account Country"
+msgstr "Kraj"
 
-#: Gateway/Base.php:624
-msgid "The bank was not chosen"
-msgstr "Proszę wybrać Bank"
+#: forms/basic/sepa.php:14 forms/paylane/sepa.php:14
+msgid "IBAN"
+msgstr "IBAN"
 
-#: Gateway/Secure.php:19 Gateway/Secure.php:27
-msgid "Secure"
-msgstr "Secure"
+#: forms/basic/sepa.php:23 forms/paylane/sepa.php:23
+msgid "BIC"
+msgstr "BIC"
 
-#: Gateway/Ideal.php:20 Gateway/Ideal.php:28 includes/paylane-settings.php:241
-#: includes/paylane-settings.php:249
-msgid "iDEAL"
-msgstr "iDEAL"
+#: forms/basic/sepa.php:32 forms/paylane/sepa.php:32
+msgid "Account Holder"
+msgstr "Właściciel konta"
 
-#: includes/paylane-js-validation-messages.php:4
+#: forms/basic/secure_form.php:4 forms/paylane/secure_form.php:4
+msgid "You will be redirected to the PayLane Secure Form website for payment."
+msgstr "Zostaniesz przekierowany na stronę PayLane w celu dokonania płatności"
+
+#: forms/basic/paypal.php:4 forms/paylane/paypal.php:4
+msgid "You will be redirected to the PayPal website for payment."
+msgstr "Zostaniesz przekierowany na stronę PayPal w celu dokonania płatności"
+
+#: includes/paylane-js-validation-messages.php:5
 msgid "This field is required"
 msgstr "To pole jest wymagane"
 
-#: includes/paylane-js-validation-messages.php:5
+#: includes/paylane-js-validation-messages.php:6
 msgid "Incorrect field format"
 msgstr "Nieodpowiedni format"
 
-#: includes/paylane-js-validation-messages.php:6
+#: includes/paylane-js-validation-messages.php:7
 msgid "Invalid card number"
 msgstr "Błędny numer karty"
 
-#: includes/paylane-js-validation-messages.php:7
+#: includes/paylane-js-validation-messages.php:8
 msgid "Invalid card expiration date"
 msgstr "Błędna data karty"
 
-#: includes/paylane-js-validation-messages.php:8
+#: includes/paylane-js-validation-messages.php:9
 msgid "Invalid card security code"
 msgstr "Błędny kod bepieczeństwa"
 
-#: includes/paylane-js-validation-messages.php:11
+#: includes/paylane-js-validation-messages.php:12
 #, php-format
 msgid "Minimum %d characters required"
 msgstr "Min. %d znaków wymagane"
 
-#: includes/paylane-js-validation-messages.php:12
+#: includes/paylane-js-validation-messages.php:13
 #, php-format
 msgid "Max. %d characters required"
 msgstr "Max. %d znawków wymagane"
 
 #: includes/paylane-settings.php:22
-msgid "Version 2.0.0"
-msgstr "Wersja 2.0.0"
+msgid "Version 2.0.6"
+msgstr "Version 2.0.6"
 
 #: includes/paylane-settings.php:25
 msgid "Name"
 msgstr "Nazwa płatności"
+
+#: includes/paylane-settings.php:27 woocommerce-gateway-paylane.php:290
+msgid "Paylane"
+msgstr "PayLane"
 
 #: includes/paylane-settings.php:31
 msgid "Description"
@@ -302,8 +189,8 @@ msgstr "Hasło API"
 
 #: includes/paylane-settings.php:58
 msgid ""
-"The API Password can be found in the merchant panel [<a href=\"https:"
-"//merchant.paylane.com\" rel=\"noopener\" target=\"_blank\">https://merchant."
+"The API Password can be found in the merchant panel [<a href=\"https://"
+"merchant.paylane.com\" rel=\"noopener\" target=\"_blank\">https://merchant."
 "paylane.com</a>] in Administration -> Integration. <strong>API Password is "
 "not a password for the merchant panel!</strong>"
 msgstr ""
@@ -348,7 +235,7 @@ msgstr "POST"
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: includes/paylane-settings.php:95
+#: includes/paylane-settings.php:96
 msgid ""
 "Select <strong>basic</strong> if you want to give your own css styles for "
 "the form."
@@ -367,14 +254,14 @@ msgstr "PayLane"
 msgid "Notification adress"
 msgstr "Adres  powiadomień"
 
-#: includes/paylane-settings.php:110
+#: includes/paylane-settings.php:111
 #, php-format
 msgid ""
 "Notifications is a service that simplifies automatic communication between "
 "your shop and PayLane. A notification has information about payment status."
 "<br><br>\n"
-"\t\t\t\t\t\t\t<big><strong>It is Highly recommended to enable "
-"notifications</strong></big>.<br>\n"
+"\t\t\t\t\t\t\t<big><strong>It is Highly recommended to enable notifications</"
+"strong></big>.<br>\n"
 "\t\t\t\t\t\t\t<br>\n"
 "<strong>To enable notifications</strong>:<br>\n"
 "- Chose individual login and password and enter them below (it should be "
@@ -388,8 +275,8 @@ msgid ""
 "We will send you Notification token to fill inside this field"
 msgstr ""
 "Notyfikacje (powiadomienia) to informacje przesyłane przez system PayLane do "
-"Twojego sklepu. Notyfikacje zawierają informacje o statusach płatności.<br>"
-"<br>\n"
+"Twojego sklepu. Notyfikacje zawierają informacje o statusach płatności."
+"<br><br>\n"
 "\t\t\t\t\t\t\t<big><strong>Zalecamy aby je włączyć</strong></big>.<br>\n"
 "\t\t\t\t\t\t\t<br>\n"
 "<strong>Co zrobić aby włączyć notyfikacje:</strong>:<br>\n"
@@ -426,9 +313,9 @@ msgstr ""
 "dokonania płatności"
 
 #: includes/paylane-settings.php:151 includes/paylane-settings.php:169
-#: includes/paylane-settings.php:202 includes/paylane-settings.php:213
-#: includes/paylane-settings.php:224 includes/paylane-settings.php:235
-#: includes/paylane-settings.php:246
+#: includes/paylane-settings.php:191 includes/paylane-settings.php:202
+#: includes/paylane-settings.php:213 includes/paylane-settings.php:224
+#: includes/paylane-settings.php:235
 msgid "Custom Payment Method Name"
 msgstr "Nazwa płatności (własna) "
 
@@ -444,100 +331,334 @@ msgstr ""
 "Możesz znaleźćswój Merchant ID w merchant panelu PayLane (Administracja => "
 "integracja => Secure Form) "
 
-#: includes/paylane-settings.php:175
-msgid "Fraud Check"
-msgstr "Sprawdzanie fraudów"
+#: includes/paylane-settings.php:164 includes/paylane-settings.php:172
+#: Gateway/CreditCard.php:20 Gateway/CreditCard.php:28
+msgid "Credit Card"
+msgstr "Karta płatnicza"
 
-#: includes/paylane-settings.php:181 includes/paylane-settings.php:192
+#: includes/paylane-settings.php:175
+msgid "3ds Check"
+msgstr "3ds Check"
+
+#: includes/paylane-settings.php:181
 msgid "YES"
 msgstr "Tak"
 
-#: includes/paylane-settings.php:182 includes/paylane-settings.php:193
+#: includes/paylane-settings.php:182
 msgid "NO"
 msgstr "Nie"
 
 #: includes/paylane-settings.php:186
-msgid "3ds Check"
-msgstr "3ds Check"
-
-#: includes/paylane-settings.php:197
 msgid "Bank Wire Transfer"
 msgstr "Szybki przelew bankowy"
 
-#: includes/paylane-settings.php:205
+#: includes/paylane-settings.php:194
 msgid "Bank Transfer"
 msgstr "Przelew bankowy"
 
-#: includes/paylane-settings.php:208
+#: includes/paylane-settings.php:197
 msgid "Direct Debit (SEPA)"
 msgstr "Direct Debit (SEPA)"
 
-#: includes/paylane-settings.php:219
+#: includes/paylane-settings.php:205 Gateway/Sepa.php:20 Gateway/Sepa.php:28
+msgid "SEPA Direct Debit"
+msgstr "Polecenie zapłaty SEPA"
+
+#: includes/paylane-settings.php:208
 msgid "SOFORT"
 msgstr "SOFORT"
 
-#: includes/paylane-settings.php:230
+#: includes/paylane-settings.php:216 Gateway/Sofort.php:20
+#: Gateway/Sofort.php:28
+msgid "Sofort"
+msgstr "Sofort"
+
+#: includes/paylane-settings.php:219
 msgid "PAYPAL"
 msgstr "PAYPAL"
 
-#: forms/paylane/credit_card.php:14 forms/basic/credit_card.php:14
-msgid "Card number"
-msgstr "Numer karty"
+#: includes/paylane-settings.php:227 Gateway/Paypal.php:20
+#: Gateway/Paypal.php:28
+msgid "PayPal"
+msgstr "PayPal"
 
-#: forms/paylane/credit_card.php:24 forms/basic/credit_card.php:24
-msgid "Expiry Date"
-msgstr "Data ważności karty"
+#: includes/paylane-settings.php:230 includes/paylane-settings.php:238
+#: Gateway/Ideal.php:20 Gateway/Ideal.php:28
+msgid "iDEAL"
+msgstr "iDEAL"
 
-#: forms/paylane/credit_card.php:31 forms/basic/credit_card.php:31
-msgid "MM / YY"
-msgstr "MM / RR"
+#: includes/paylane-settings.php:241 Gateway/ApplePay.php:29
+#: Gateway/ApplePay.php:37
+msgid "Apple Pay"
+msgstr "Apple Pay"
 
-#: forms/paylane/credit_card.php:34 forms/basic/credit_card.php:34
-msgid "CVV/CVC"
-msgstr "CVV/CVC"
-
-#: forms/paylane/credit_card.php:41 forms/basic/credit_card.php:41
-msgid "CVC"
-msgstr "CVC"
-
-#: forms/paylane/credit_card.php:44 forms/basic/credit_card.php:44
-msgid "Card holder name"
-msgstr "Właściciel karty"
-
-#: forms/paylane/ideal.php:3 forms/paylane/transfer.php:9
-#: forms/basic/ideal.php:3 forms/basic/transfer.php:9
-msgid "You will be redirected to your bank's website payment."
+#: includes/paylane-settings.php:244
+msgid ""
+"<strong>What to do to enable Apple Pay:</strong><br>- Send an email to "
+"support@paylane.com asking you to enable Apple Pay on your account<br>- If "
+"you use the payment method through the API, please request a <b>certificate</"
+"b><br>- Paste the <b>certificate</b> into the certificate field<br>- Tell us "
+"when you will finish above activities"
 msgstr ""
-"Zostaniesz przekierowany na stronę swojego banku w celu dokonania płatności"
+"<strong>Co zrobić aby włączyć Apple Pay:</strong><br>\n"
+"                       - Wyślij nam na adres support@paylane.com prośbę o\n"
+"uruchomienie Apple Pay na swoim koncie<br>\n"
+"                        - W przypadku korzystania z metody płatnosci przez\n"
+"API poproś o nadanie <b>certyfikatu</b><br>\n"
+"                        - Wklej <b>certyfikat</b> w pole certyfikat<br>\n"
+"                        - Poinformuj nas o wykonaniu powyższych czynności."
 
-#: forms/paylane/sepa.php:5 forms/basic/sepa.php:5
-msgid "Account Country"
-msgstr "Kraj"
+#: includes/paylane-settings.php:248
+msgid "Button Style"
+msgstr "Styl przycisku"
 
-#: forms/paylane/sepa.php:14 forms/basic/sepa.php:14
-msgid "IBAN"
-msgstr "IBAN"
+#: includes/paylane-settings.php:254
+msgid "Black"
+msgstr "Czarny"
 
-#: forms/paylane/sepa.php:23 forms/basic/sepa.php:23
-msgid "BIC"
-msgstr "BIC"
+#: includes/paylane-settings.php:255
+msgid "White"
+msgstr "Biały"
 
-#: forms/paylane/sepa.php:32 forms/basic/sepa.php:32
-msgid "Account Holder"
-msgstr "Właściciel konta"
+#: includes/paylane-settings.php:256
+msgid "White with outline border"
+msgstr "Biały z obramowaniem"
 
-#: forms/paylane/secure_form.php:3 forms/basic/secure_form.php:3
-msgid "You will be redirected to the PayLane Secure Form website for payment."
-msgstr "Zostaniesz przekierowany na stronę PayLane w celu dokonania płatności"
+#: includes/paylane-settings.php:260
+msgid "Language"
+msgstr "Język"
 
-#: forms/paylane/sofort.php:3 forms/basic/sofort.php:3
-msgid "You will be redirected to the Sofort website for payment."
-msgstr "Zostaniesz przekierowany na stronę Sofort w celu dokonania płatności"
+#: includes/paylane-settings.php:266
+msgid "Auto"
+msgstr "Automatyczny"
 
-#: forms/paylane/paypal.php:3 forms/basic/paypal.php:3
-msgid "You will be redirected to the PayPal website for payment."
-msgstr "Zostaniesz przekierowany na stronę PayPal w celu dokonania płatności"
+#: includes/paylane-settings.php:267
+msgid "PL"
+msgstr "PL"
 
-#. Name of the plugin
-msgid "WooCommerce PayLane Gateway"
-msgstr "WooCommerce Bramka płatnicza PayLane"
+#: includes/paylane-settings.php:268
+msgid "EN"
+msgstr "EN"
+
+#: includes/paylane-settings.php:269
+msgid "DE"
+msgstr "DE"
+
+#: includes/paylane-settings.php:270
+msgid "FR"
+msgstr "FR"
+
+#: includes/paylane-settings.php:274
+msgid "Certificate"
+msgstr "Certyfikat"
+
+#: views/admin/notices/woocommerce-is-missing.php:4
+msgid ""
+"The PayLane payment module requires WooCommerce to run, you can download it"
+msgstr ""
+"Moduł PayLane wymaga WooCommerce do poprawnego działania. Musisz go ściagnąć."
+
+#: views/admin/notices/woocommerce-is-missing.php:7 Gateway/Base.php:86
+msgid "here"
+msgstr "tu"
+
+#: woocommerce-gateway-paylane.php:59
+msgid "Payment Error Occurred"
+msgstr "Wystąpił błąd płatności"
+
+#: woocommerce-gateway-paylane.php:126
+msgid "Create account"
+msgstr "Stwórz konto"
+
+#: woocommerce-gateway-paylane.php:153
+msgid "This API method is not allowed for this merchant account."
+msgstr "Ta metoda API nie jest dozwolona na tym koncie"
+
+#: woocommerce-gateway-paylane.php:289
+msgid "paylane"
+msgstr "paylane"
+
+#: woocommerce-gateway-paylane.php:459 woocommerce-gateway-paylane.php:465
+#: woocommerce-gateway-paylane.php:491
+msgid "Success, id_sale:"
+msgstr "Sukces, id_sale:"
+
+#: woocommerce-gateway-paylane.php:500 woocommerce-gateway-paylane.php:1000
+msgid "Error ID:"
+msgstr "ID Błędu:"
+
+#: woocommerce-gateway-paylane.php:504 woocommerce-gateway-paylane.php:1004
+msgid "Error number:"
+msgstr "Numer błędu:"
+
+#: woocommerce-gateway-paylane.php:508 woocommerce-gateway-paylane.php:1008
+msgid "Error description:"
+msgstr "Opis błędu:"
+
+#: woocommerce-gateway-paylane.php:597 woocommerce-gateway-paylane.php:694
+msgid "Payment awaiting confirmation"
+msgstr "Transakcja oczekująca na potwierdzenie"
+
+#: woocommerce-gateway-paylane.php:605 woocommerce-gateway-paylane.php:606
+msgid "Wrong hash"
+msgstr "Błędny HASH"
+
+#: woocommerce-gateway-paylane.php:660
+msgid "Error: wrong hash"
+msgstr "Błąd: Błędny hash"
+
+#: woocommerce-gateway-paylane.php:664
+msgid "Error, 3-D auth transaction declined"
+msgstr "Błąd, Nie udana autoryzacja 3-D secure"
+
+#: woocommerce-gateway-paylane.php:680
+msgid "Error 3-D Secure payment"
+msgstr "Błąd 3-D Secure"
+
+#: woocommerce-gateway-paylane.php:811
+msgid "Order no.: "
+msgstr "Numer zamówienia:"
+
+#: woocommerce-gateway-paylane.php:832
+msgid "Check Direct Debit transaction status (SEPA)"
+msgstr "Sprawdź status transakcji (SEPA) "
+
+#: woocommerce-gateway-paylane.php:833
+msgid "Test subscription payment"
+msgstr "Testowa płatność subksrybcyjna"
+
+#: woocommerce-gateway-paylane.php:857
+msgid "PayLane transaction status: "
+msgstr "Status Transakcji"
+
+#: woocommerce-gateway-paylane.php:923
+#, php-format
+msgid "Transaction failed with reason: %s."
+msgstr "Transakcja nieudana, powód: %s. "
+
+#: woocommerce-gateway-paylane.php:932
+#, php-format
+msgid "Transaction confirmed, payment method: %s. %s"
+msgstr "Transakcja potwierdzona, metoda płatności: %s. %s"
+
+#: woocommerce-gateway-paylane.php:1011
+msgid "Refund Failed:"
+msgstr "Zwrot zakończony niepowodzeniem"
+
+#: woocommerce-gateway-paylane.php:1150
+msgid ""
+"Unable to create certificate folder. Please create \"./well-known/apple-"
+"developer-merchantid-domain-association.txt\" file into your main domain "
+"directory with certificate text."
+msgstr ""
+"Nie można stworzyć katalogu dla certyfikatu. Utwórz plik \"./well-known/"
+"apple-developer-merchantid-domain-association.txt\" w głównym katalogu "
+"domeny z tekstem certyfikatu."
+
+#: woocommerce-gateway-paylane.php:1175
+msgid ""
+"Unable to write certificate file. Please create \"./well-known/apple-"
+"developer-merchantid-domain-association.txt\" file into your main domain "
+"directory with certificate text."
+msgstr ""
+"Nie można zapisać pliku certyfikatu. Utwórz plik \"./well-known/apple-"
+"developer-merchantid-domain-association.txt\" w głównym katalogu domeny z "
+"tekstem certyfikatu."
+
+#: woocommerce-gateway-paylane.php:1288 Gateway/Base.php:462
+msgid "Transaction complete"
+msgstr "Transakcja zakończona"
+
+#: woocommerce-gateway-paylane.php:1292 Gateway/Base.php:467
+msgid "Refund complete"
+msgstr "Zwrot zakończony"
+
+#: woocommerce-gateway-paylane.php:1296 Gateway/Base.php:472
+msgid "Reversal received"
+msgstr "Otrzymano Reversal"
+
+#: woocommerce-gateway-paylane.php:1300 woocommerce-gateway-paylane.php:1304
+#: Gateway/Base.php:477 Gateway/Base.php:482
+msgid "Retrieval request / chargeback opened"
+msgstr "Retrieval / Chargeback rozpoczęty"
+
+#: Gateway/Secure.php:20 Gateway/Secure.php:28
+msgid "Secure"
+msgstr "Secure"
+
+#: Gateway/BankTransfer.php:20 Gateway/BankTransfer.php:28
+msgid "Bank transfer"
+msgstr "Przelew bankowy"
+
+#: Gateway/Base.php:228
+msgid "Unsupported payment method"
+msgstr "Ta metoda płatności jest niedostępna"
+
+#: Gateway/Base.php:240
+msgid "Awaiting payment confirmation"
+msgstr "Oczekujemy na potwierdzenie płatności"
+
+#: Gateway/Base.php:270
+msgid "Incorrect Apple Pay payload"
+msgstr "Nieprawidłowe dane Apple Pay"
+
+#: Gateway/Base.php:556
+msgid "Card token is empty"
+msgstr "Brak tokenu karty"
+
+#: Gateway/Base.php:560
+msgid "Unrecognized or malformed token"
+msgstr "Uszkodzony token"
+
+#: Gateway/Base.php:575
+msgid "Account holder name is empty"
+msgstr "Podaj imię i nazwisko"
+
+#: Gateway/Base.php:580
+msgid "Account country is empty"
+msgstr "Podaj Kraj"
+
+#: Gateway/Base.php:585
+msgid "IBAN is empty"
+msgstr "Numer IBAN jest pusty"
+
+#: Gateway/Base.php:590
+msgid "BIC is empty"
+msgstr "Numer BIC jest pusty"
+
+#: Gateway/Base.php:602
+msgid "The bank was not chosen"
+msgstr "Proszę wybrać Bank"
+
+#~ msgid ""
+#~ "<strong>What to do to enable Apple Pay:</strong><br>\n"
+#~ "                        - Send an email to support@paylane.com asking you "
+#~ "to enable Apple Pay on your account<br>\n"
+#~ "                        - If you use the payment method through the API, "
+#~ "please request a <b>certificate</b><br>\n"
+#~ "                        - Paste the <b>certificate</b> into the "
+#~ "certificate field<br>\n"
+#~ "                        - Tell us when you will finish above activities"
+#~ msgstr ""
+#~ "<strong>Co zrobić aby włączyć Apple Pay:</strong><br>\n"
+#~ "                        - Wyślij nam na adres support@paylane.com prośbę "
+#~ "o uruchomienie Apple Pay na swoim koncie<br>\n"
+#~ "                        - W przypadku korzystania z metody płatnosci "
+#~ "przez API poproś o nadanie <b>certyfikatu</b><br>\n"
+#~ "                        - Wklej <b>certyfikat</b> w pole certyfikat<br>\n"
+#~ "                        - Poinformuj nas o wykonaniu powyższych czynności."
+
+#~ msgid "First name is empty"
+#~ msgstr "Brak Imienia"
+
+#~ msgid "Last name is empty"
+#~ msgstr "Podaj nazwisko"
+
+#~ msgid "Version 2.0.0"
+#~ msgstr "Wersja 2.0.0"
+
+#~ msgid "Fraud Check"
+#~ msgstr "Sprawdzanie fraudów"
+
+#~ msgid "WooCommerce PayLane Gateway"
+#~ msgstr "WooCommerce Bramka płatnicza PayLane"

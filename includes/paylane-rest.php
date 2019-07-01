@@ -588,4 +588,19 @@ class PayLaneRestClient
         
         return $response;
     }
+
+    /**
+     * Performs Apple Pay sale
+     * 
+     * @param array $params Sale Params
+     * @return array
+     */
+    public function applePaySale($params)
+    {
+        return $this->call(
+            'applepay/sale',
+            'post',
+             $params
+        );
+    }
 }
