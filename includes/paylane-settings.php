@@ -157,7 +157,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
                     'title' => __( 'Merchant ID', 'wc-gateway-paylane' ),
                     'type' => 'text',
                     'description' => __( 'You can find your Merchant ID in the Merchant Panel (Settings => Secure Form => Integration)', 'wc-gateway-paylane' ),
-                    'default' => __("", 'wc-gateway-paylane' ),
+                    'default' => '',
                     'desc_tip' => true,
                 ),
                 'credit_card' => array(
@@ -236,5 +236,43 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
                     'type' => 'text',
                     'description' => '',
                     'default' => __("iDEAL",'wc-gateway-paylane' ),
+                ),
+                'applepay' => array(
+                    'title' => __( 'Apple Pay', 'wc-gateway-paylane' ),
+                    'type'   => 'title',
+		            'description' => __( 
+                        '<strong>What to do to enable Apple Pay:</strong><br>- Send an email to support@paylane.com asking you to enable Apple Pay on your account<br>- If you use the payment method through the API, please request a <b>certificate</b><br>- Paste the <b>certificate</b> into the certificate field<br>- Tell us when you will finish above activities', 
+                        'wc-gateway-paylane' ),
+                ),
+                'apple_pay_style' => array(
+                    'title'       => __( 'Button Style','wc-gateway-paylane' ),
+                    'type'        => 'select',
+                    'class'       => 'wc-enhanced-select',
+                    'default'     => 'black',
+                    'desc_tip'    => false,
+                    'options'     => array(
+                        'black' => __( 'Black','wc-gateway-paylane' ),
+                        'white' => __( 'White','wc-gateway-paylane' ),
+                        'white-outline' => __( 'White with outline border','wc-gateway-paylane' )
+                    ),
+                ),
+                'apple_pay_language' => array(
+                    'title'       => __( 'Language','wc-gateway-paylane' ),
+                    'type'        => 'select',
+                    'class'       => 'wc-enhanced-select',
+                    'default'     => 'auto',
+                    'desc_tip'    => false,
+                    'options'     => array(
+                        'auto' => __( 'Auto','wc-gateway-paylane' ),
+                        'pl' => __( 'PL','wc-gateway-paylane' ),
+                        'en' => __( 'EN','wc-gateway-paylane' ),
+                        'de' => __( 'DE','wc-gateway-paylane' ),
+                        'fr' => __( 'FR','wc-gateway-paylane' ),
+                    ),
+                ),
+                'apple_pay_cert' => array(
+                    'title' => __( 'Certificate','wc-gateway-paylane' ),
+                    'type' => 'textarea',
+                    'description' => '',
                 ),
 );
