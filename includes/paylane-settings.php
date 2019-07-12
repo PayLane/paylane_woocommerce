@@ -19,7 +19,7 @@ foreach ( $statuses as $status => $status_name ) {
 return array(
                 'version' => array(
                     'type' => 'title',
-                    'description' => __( 'Version 2.0.6', 'wc-gateway-paylane' ),
+                    'description' => __( 'Version', 'wc-gateway-paylane' ).' 2.1.1',
                 ),
                 'title' => array(
                     'title' => __( 'Name', 'wc-gateway-paylane' ),

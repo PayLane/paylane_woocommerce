@@ -17,7 +17,7 @@ class Paylane_Gateway_CreditCard extends Paylane_Gateway_Base
 	 */
 	protected function getMethodTitle()
 	{
-		return $this->get_option( 'credit_card_name',  __( 'Credit Card', 'wc-gateway-paylane' ) );
+		return $this->get_paylane_option( 'credit_card_name',  __( 'Credit Card', 'wc-gateway-paylane' ) );
 	}
 
 	/**
@@ -25,6 +25,6 @@ class Paylane_Gateway_CreditCard extends Paylane_Gateway_Base
 	 */
 	protected function getGatewayTitle()
 	{
-		return __('Credit Card', 'wc-gateway-paylane');
+		return __('Credit Card', 'wc-gateway-paylane'); 
 	}
 }

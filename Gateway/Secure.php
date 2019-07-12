@@ -10,14 +10,14 @@ class Paylane_Gateway_Secure extends Paylane_Gateway_Base
 	/**
 	 * @var string
 	 */
-	protected $gateway_id = 'paylane_secure_form';
+	protected $gateway_id = 'paylane_secure_form'; 
 
 	/**
 	 * @return mixed
 	 */
 	protected function getMethodTitle()
 	{
-		return $this->get_option('secure_form_name', __( 'Secure', 'wc-gateway-paylane' ) );
+		return $this->get_paylane_option('secure_form_name', __( 'Secure', 'wc-gateway-paylane' ) );
 	}
 
 	/**

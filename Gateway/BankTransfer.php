@@ -15,9 +15,9 @@ class Paylane_Gateway_BankTransfer extends Paylane_Gateway_Base
 	/**
 	 * @return mixed
 	 */
-	protected function getMethodTitle()
+	protected function getMethodTitle() 
 	{
-		return $this->get_option( 'transfer_name', __( 'Bank transfer', 'wc-gateway-paylane' ) );
+		return $this->get_paylane_option( 'transfer_name', __( 'Bank transfer', 'wc-gateway-paylane' ) );
 	}
 
 	/**

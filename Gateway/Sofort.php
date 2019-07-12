@@ -10,14 +10,14 @@ class Paylane_Gateway_Sofort extends Paylane_Gateway_Base
 	/**
 	 * @var string
 	 */
-	protected $gateway_id = 'paylane_sofort';
+	protected $gateway_id = 'paylane_sofort'; 
 
 	/**
 	 * @return mixed
 	 */
 	protected function getMethodTitle()
 	{
-		return $this->get_option('sofort_name', __( 'Sofort', 'wc-gateway-paylane' ) );
+		return $this->get_paylane_option('sofort_name', __( 'Sofort', 'wc-gateway-paylane' ) );
 	}
 
 	/**

@@ -10,14 +10,14 @@ class Paylane_Gateway_Paypal extends Paylane_Gateway_Base
 	/**
 	 * @var string
 	 */
-	protected $gateway_id = 'paylane_paypal';
+	protected $gateway_id = 'paylane_paypal'; 
 
 	/**
 	 * @return mixed
 	 */
 	protected function getMethodTitle()
 	{
-		return $this->get_option('paypal_name', __( 'PayPal', 'wc-gateway-paylane' ) );
+		return $this->get_paylane_option('paypal_name', __( 'PayPal', 'wc-gateway-paylane' ) );
 	}
 
 	/**

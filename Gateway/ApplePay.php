@@ -22,11 +22,11 @@ class Paylane_Gateway_ApplePay extends Paylane_Gateway_Base
 	}
 
     /**
-     * @return mixed
+     * @return mixed 
      */
     protected function getMethodTitle()
     {
-        return $this->get_option('apple_pay_name', __('Apple Pay', 'wc-gateway-paylane'));
+        return $this->get_paylane_option('apple_pay_name', __('Apple Pay', 'wc-gateway-paylane'));
     }
 
     /**
@@ -38,7 +38,7 @@ class Paylane_Gateway_ApplePay extends Paylane_Gateway_Base
 	}
 	
 	private function getButtonLanguage(){
-		$lang = $this->get_option('apple_pay_language');
+		$lang = $this->get_paylane_option('apple_pay_language');
 		if($lang == 'auto'){
 			return substr(get_locale(), 0,2);
 		}
@@ -68,8 +68,8 @@ class Paylane_Gateway_ApplePay extends Paylane_Gateway_Base
 
         wp_enqueue_script('woocommerce_paylane_api_script', 'https://js.paylane.com/v1/', array());
         $form = $this->get_form('apple_pay', array(
-            'api_key' => $this->get_option('api_key_val'),
-            'button_style' => $this->get_option('apple_pay_style'),
+            'api_key' => $this->get_paylane_option('api_key_val'),
+            'button_style' => $this->get_paylane_option('apple_pay_style'),
             'button_language' => $this->getButtonLanguage(),
             'currencyCode' => get_woocommerce_currency(),
             'label' => get_bloginfo('name'), 

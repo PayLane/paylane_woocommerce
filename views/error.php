@@ -1,7 +1,7 @@
 <?php
 $errors = wc_get_notices('paylane_error');
 global $woocommerce;
-$checkout_url = $woocommerce->cart->get_checkout_url();
+$checkout_url = wc_get_checkout_url();
 
 $body = '';
 

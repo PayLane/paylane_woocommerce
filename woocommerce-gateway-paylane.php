@@ -5,7 +5,7 @@
 /**
  * Plugin Name: WooCommerce PayLane Gateway
  * Description: PayLane (Polskie ePłatności Online) payment module for WooCommerce.
- * Version: 2.1.0
+ * Version: 2.1.1
  * Author: Paylane (Polskie ePłatności Online)
  * Author URI: https://paylane.pl
  * Plugin URI: https://github.com/PayLane/paylane_woocommerce
@@ -16,7 +16,6 @@
  * WC tested up to: 3.6
  **/
 
-add_filter('the_posts', 'generate_error_page', -10);
 add_filter('woocommerce_notice_types', 'add_paylane_notice_type');
 add_action('before_woocommerce_pay', 'paylane_js_validation', 10, 0);
 add_action('woocommerce_checkout_before_order_review', 'paylane_js_validation', 10, 0);
@@ -39,49 +38,7 @@ EOF;
 
 }
 
-function generate_error_page($posts)
-{
-    global $wp, $wp_query;
-    if (!session_id()) {
-        session_start();
-    }
 
-    if (!defined('PAYLANE_ERROR_PAGE') && isset($_GET['paylane-api-error']) && isset($_SESSION['paylane_error']) && count($_SESSION['paylane_error']) > 0) {
-        define('PAYLANE_ERROR_PAGE', true);
-
-        $_SESSION['paylane_error'] = array();
-
-        // create a fake virtual page
-        $post = new stdClass;
-        $post->post_author = 1;
-        $post->post_name = 'Error';
-        $post->guid = home_url() . '/' . 'paylane/error';
-        $post->post_title = __('Payment Error Occurred', 'wc-gateway-paylane');
-        $post->post_content = require_once __DIR__ . '/views/error.php';
-        $post->ID = -1;
-        $post->post_type = 'page';
-        $post->post_status = 'static';
-        $post->comment_status = 'closed';
-        $post->ping_status = 'open';
-        $post->comment_count = 0;
-        $post->post_date = current_time('mysql');
-        $post->post_date_gmt = current_time('mysql', 1);
-        $posts = null;
-        $posts[] = $post;
-
-        // make wpQuery believe this is a real page too
-        $wp_query->is_page = true;
-        $wp_query->is_singular = true;
-        $wp_query->is_home = false;
-        $wp_query->is_archive = false;
-        $wp_query->is_category = false;
-        unset($wp_query->query['error']);
-        $wp_query->query_vars['error'] = '';
-        $wp_query->is_404 = false;
-    }
-
-    return $posts;
-}
 
 function init_paylane()
 {
@@ -286,7 +243,7 @@ function init_paylane()
         {
             global $woocommerce;
 
-            $this->id = __('paylane', 'wc-gateway-paylane');
+            $this->id = 'paylane';//__('paylane', 'wc-gateway-paylane');
             $this->method_title = __('Paylane', 'wc-gateway-paylane');
             $this->has_fields = true;
             $this->notify_link = add_query_arg('wc-api', 'WC_Gateway_Paylane', home_url('/'));
@@ -343,12 +300,15 @@ function init_paylane()
                 wp_register_style(
                     'paylane-woocommerce', plugins_url(
                         'assets/css/paylane-woocommerce-' . $this->get_option('design') . '.css', __FILE__
-                    ), [], '204_' . $this->get_option('design'), 'all'
+                    ), [], '211_' . $this->get_option('design'), 'all'
                 );
                 wp_enqueue_style('paylane-woocommerce');
+                wp_register_script(
+                    'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', array('jquery','jquery-payment'),
+                    '211', true
+                );
                 wp_enqueue_script(
-                    'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', [],
-                    '204', true
+                    'paylane-woocommerce-script'
                 );
             }
 
@@ -357,12 +317,15 @@ function init_paylane()
         //Main function which sends data to PayLane service and get response
         function data_handler()
         {
-            // print_r('adsadas');exit;
+
             if (isset($_POST['content']) && ($this->enable_notification === 'yes')) {
+               
+             
                 if (!isset($_POST['communication_id']) || empty($_POST['communication_id'])) {
                     die('Empty communication id');
                 }
 
+            
                 if (!empty(($this->get_option('notification_token_PayLane'))) && ($this->get_option('notification_token_PayLane') !== $_POST['token'])) {
                     die('Wrong token');
                 }
@@ -382,7 +345,7 @@ function init_paylane()
                 $type = $_GET['type'];
             }
 
-            if (!$type) {
+            if (!$type) {//todo? $type === null
                 $this->response_check();
             } else {
 
@@ -616,7 +579,7 @@ function init_paylane()
 
             $order_id = (isset($_POST['description'])) ? intval($_POST['description']) : intval($_GET['description']);
             $type = get_post_meta($order_id, 'paylane-type', true);
-            $redirect_version = $this->get_option('redirect_version_' . $type);
+            $redirect_version = $this->get_option('paylane_redirect_version');
 
             if ($redirect_version == 'POST') {
                 $response['status'] = $_POST['status'];
@@ -795,7 +758,8 @@ function init_paylane()
             $address = $order->get_address('billing');
             $customer_name = $address['first_name'] . ' ' . $address['last_name'];
             $customer_address = $address['address_1'] . ' ' . $address['address_2'];
-            $hash_data = array('order_id' => $order_id, "total" => $order->get_total());
+            $hash_data = array('order_id' => $order_id, "total" => $order->get_total()); 
+
 
             $form = '
             <form action="' . $url . '" method="' . $this->get_option('paylane_redirect_version') . '" id="paylane_form" name="paylane_form">
@@ -890,7 +854,7 @@ function init_paylane()
                 $result = $client->resaleBySale($params);
 
                 if ($client->isSuccess()) {
-                    set_order_paylane_id($order->id, $result['id_sale']);
+                    $this->set_order_paylane_id($order->id, $result['id_sale']);//todo check
                     WC_Subscriptions_Manager::process_subscription_payments_on_order($parent_order);
                 } else {
                     WC_Subscriptions_Manager::process_subscription_payment_failure_on_order($parent_order);
@@ -1099,13 +1063,14 @@ function init_paylane()
          */
         private function add_actions()
         {
+            
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
             add_action('woocommerce_api_wc_gateway_paylane', array($this, 'data_handler'));
             add_action('woocommerce_api_wc_gateway_paylane_3ds', array($this, 'response_check_3ds'));
             add_action('woocommerce_order_actions', array($this, 'add_order_meta_box_actions'));
             add_action('woocommerce_order_action_directdebit_check', array($this, 'check_direct_debit'));
             add_action('admin_init', array($this, 'handle_subscriptions_hooks'));
-            add_action('wp_enqueue_scripts', array($this, 'paylane_payment_style'));
+            add_action('wp_enqueue_scripts', array($this, 'paylane_payment_style'),20);
             add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         }
 
@@ -1248,16 +1213,10 @@ function init_paylane()
         {
             global $woocommerce;
 
-            if (!isset($_SESSION['paylane_error'])) {
-                $_SESSION['paylane_error'] = array();
-            }
-
-            $_SESSION['paylane_error'][] = $error_message;
-
-            // wc_add_notice($error_message, 'paylane_error');
-            $redirectUrl = add_query_arg('paylane-api-error', '1', $woocommerce->cart->get_checkout_url());
-            wp_redirect($redirectUrl);
+            wc_add_notice(__('Błąd płatności', 'wc-gateway-paylane').'<br>'.$error_message, 'error');
+            wp_redirect(wc_get_checkout_url());
             exit;
+
         }
 
         /**
@@ -1274,38 +1233,51 @@ function init_paylane()
             if (empty($_POST['communication_id'])) {
                 die('Empty communication id');
             }
-            /*
-            // check if token correct
-            if ((!empty($this->get_option('notifications_token')))&&($this->get_option('notifications_token') !== $_POST['token']))
-            die('Wrong token');
-             */
+
+    
+
             foreach ($data as $notification) {
-                $id_sale = $notification['id_sale'];
                 $order_id = $notification['text'];
                 $order = new WC_Order($order_id);
 
-                if ($notification['type'] === 'S') {
-                    $order->add_order_note(__('Transaction complete', 'wc-gateway-paylane'));
-                }
-
-                if ($notification['type'] === 'R') {
-                    $order->add_order_note(__('Refund complete', 'wc-gateway-paylane'));
-                }
-
-                if ($notification['type'] === 'RV') {
-                    $order->update_status('on-hold', __('Reversal received', 'wc-gateway-paylane'));
-                }
-
-                if ($notification['type'] === 'RRO') {
-                    $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
-                }
-
-                if ($notification['type'] === 'CAD') {
-                    $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
-                }
+                $this->parseNotification($notification, $order);
             }
 
             die($_POST['communication_id']);
+        }
+
+        private function parseNotification($notification, $order){
+            $id_sale = $notification['id_sale'];
+
+            $notificationType = get_post_meta($order->get_id(), 'paylane-notification-type', true);
+
+            if($notificationType === false || ($notificationType !== false && !in_array($notificationType, ['S','R']))){
+                //first time or not final type
+
+                if ($notification['type'] === 'S') {
+                    $order->add_order_note('PayLane: '.__('Transaction complete', 'wc-gateway-paylane'));
+                }
+    
+                if ($notification['type'] === 'R') {
+                    $order->add_order_note('PayLane: '.__('Refund complete', 'wc-gateway-paylane'));
+                }
+    
+                if ($notification['type'] === 'RV') {
+                    $order->update_status('on-hold', __('Reversal received', 'wc-gateway-paylane'));
+                }
+    
+                if ($notification['type'] === 'RRO') {
+                    $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
+                }
+    
+                if ($notification['type'] === 'CAD') {
+                    $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
+                }
+    
+                update_post_meta($order->get_id(), 'paylane-notification-timestamp', time());
+                update_post_meta($order->get_id(), 'paylane-notification-type', $notification['type']);
+            }
+    
         }
 
         /**
