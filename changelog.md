@@ -1,7 +1,16 @@
 Changelog by Mind Joker Marcin Musiak <marcin@musiak.pl>
 =========================================================
 
-[2.1.1]
+= 2.1.2 - 2019-07-15 =
+* Support older versions of WooCommerce
+* Add switches for payment methods in older versions of WooCommerce
+* Fix Redirect Method. Now correctly support POST method
+* Fix set order status when custom status was added in WooCommerce
+* Automatically set chosen status instead of note on handle payment notification from provider
+* Improve rules of payment notifications
+
+
+= 2.1.1 - 2019-07-09 =
 * Fix the loading plugin settings from the admin panel
 * Fix the non-existence of the token on the checkout page
 * Fix the possible conflicts with other JS plugins on the checkout page on the order submit action
@@ -13,7 +22,7 @@ Changelog by Mind Joker Marcin Musiak <marcin@musiak.pl>
 * Unify the order description on the ApplePay method
 
 
-[2.1.0]
+= 2.1.0 - 2019-06-21 =
 * Export declaration PAYLANE_VALIDATION_MESSAGES
     PAYLANE_VALIDATION_MESSAGES.ts
 * Import constant to the file

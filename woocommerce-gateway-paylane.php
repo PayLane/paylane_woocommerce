@@ -5,7 +5,7 @@
 /**
  * Plugin Name: WooCommerce PayLane Gateway
  * Description: PayLane (Polskie ePłatności Online) payment module for WooCommerce.
- * Version: 2.1.1
+ * Version: 2.1.2
  * Author: Paylane (Polskie ePłatności Online)
  * Author URI: https://paylane.pl
  * Plugin URI: https://github.com/PayLane/paylane_woocommerce
@@ -37,8 +37,6 @@ function paylane_js_validation()
 EOF;
 
 }
-
-
 
 function init_paylane()
 {
@@ -243,7 +241,7 @@ function init_paylane()
         {
             global $woocommerce;
 
-            $this->id = 'paylane';//__('paylane', 'wc-gateway-paylane');
+            $this->id = 'paylane'; //__('paylane', 'wc-gateway-paylane');
             $this->method_title = __('Paylane', 'wc-gateway-paylane');
             $this->has_fields = true;
             $this->notify_link = add_query_arg('wc-api', 'WC_Gateway_Paylane', home_url('/'));
@@ -304,7 +302,7 @@ function init_paylane()
                 );
                 wp_enqueue_style('paylane-woocommerce');
                 wp_register_script(
-                    'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', array('jquery','jquery-payment'),
+                    'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', array('jquery', 'jquery-payment'),
                     '211', true
                 );
                 wp_enqueue_script(
@@ -319,13 +317,11 @@ function init_paylane()
         {
 
             if (isset($_POST['content']) && ($this->enable_notification === 'yes')) {
-               
-             
+
                 if (!isset($_POST['communication_id']) || empty($_POST['communication_id'])) {
                     die('Empty communication id');
                 }
 
-            
                 if (!empty(($this->get_option('notification_token_PayLane'))) && ($this->get_option('notification_token_PayLane') !== $_POST['token'])) {
                     die('Wrong token');
                 }
@@ -345,7 +341,7 @@ function init_paylane()
                 $type = $_GET['type'];
             }
 
-            if (!$type) {//todo? $type === null
+            if (!$type) { //todo? $type === null
                 $this->response_check();
             } else {
 
@@ -493,7 +489,7 @@ function init_paylane()
             }
 
             $type = get_post_meta($order_id, 'paylane-type', true);
-            $redirect_version = $this->get_option('redirect_version');
+            $redirect_version = $this->get_option('paylane_redirect_version');
 
             if ($redirect_version == 'POST') {
                 $response['status'] = $_POST['status'];
@@ -758,8 +754,7 @@ function init_paylane()
             $address = $order->get_address('billing');
             $customer_name = $address['first_name'] . ' ' . $address['last_name'];
             $customer_address = $address['address_1'] . ' ' . $address['address_2'];
-            $hash_data = array('order_id' => $order_id, "total" => $order->get_total()); 
-
+            $hash_data = array('order_id' => $order_id, "total" => $order->get_total());
 
             $form = '
             <form action="' . $url . '" method="' . $this->get_option('paylane_redirect_version') . '" id="paylane_form" name="paylane_form">
@@ -854,7 +849,7 @@ function init_paylane()
                 $result = $client->resaleBySale($params);
 
                 if ($client->isSuccess()) {
-                    $this->set_order_paylane_id($order->id, $result['id_sale']);//todo check
+                    $this->set_order_paylane_id($order->id, $result['id_sale']); //todo check
                     WC_Subscriptions_Manager::process_subscription_payments_on_order($parent_order);
                 } else {
                     WC_Subscriptions_Manager::process_subscription_payment_failure_on_order($parent_order);
@@ -862,6 +857,41 @@ function init_paylane()
             } else {
                 WC_Subscriptions_Manager::process_subscription_payments_on_order($parent_order);
             }
+        }
+
+        private function getCorrectOrderStatus($state)
+        {
+            $order_status = 'pending';
+
+            if (substr($state, 0, 3) == 'wc-') {
+                $order_status = substr($state, 3);
+            } else {
+                switch ($state) {
+                    case 0:
+                        $order_status = 'pending';
+                        break;
+                    case 1:
+                        $order_status = 'processing';
+                        break;
+                    case 2:
+                        $order_status = 'on-hold';
+                        break;
+
+                    case 3:
+                        $order_status = 'completed';
+                        break;
+
+                    case 4:
+                        $order_status = 'cancelled';
+                        break;
+
+                    case 5:
+                        $order_status = 'refunded';
+                        break;
+                }
+            }
+
+            return $order_status;
         }
 
         /**
@@ -898,29 +928,7 @@ function init_paylane()
                 $message
             );
 
-            switch ($state) {
-                case 0:
-                    $order_status = 'pending';
-                    break;
-                case 1:
-                    $order_status = 'processing';
-                    break;
-                case 2:
-                    $order_status = 'on-hold';
-                    break;
-
-                case 3:
-                    $order_status = 'completed';
-                    break;
-
-                case 4:
-                    $order_status = 'cancelled';
-                    break;
-
-                case 5:
-                    $order_status = 'refunded';
-                    break;
-            }
+            $order_status = $this->getCorrectOrderStatus($state);
 
             $order->update_status($order_status, $order_status_message);
             $return_url = $order->get_checkout_order_received_url();
@@ -1063,14 +1071,14 @@ function init_paylane()
          */
         private function add_actions()
         {
-            
+
             add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
             add_action('woocommerce_api_wc_gateway_paylane', array($this, 'data_handler'));
             add_action('woocommerce_api_wc_gateway_paylane_3ds', array($this, 'response_check_3ds'));
             add_action('woocommerce_order_actions', array($this, 'add_order_meta_box_actions'));
             add_action('woocommerce_order_action_directdebit_check', array($this, 'check_direct_debit'));
             add_action('admin_init', array($this, 'handle_subscriptions_hooks'));
-            add_action('wp_enqueue_scripts', array($this, 'paylane_payment_style'),20);
+            add_action('wp_enqueue_scripts', array($this, 'paylane_payment_style'), 20);
             add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
         }
 
@@ -1083,13 +1091,14 @@ function init_paylane()
         {
             add_filter('woocommerce_payment_gateways', array($this, 'add_paylane_gateway'));
             add_filter('woocommerce_available_payment_gateways', array($this, 'disable_paylane_main_gateway'));
-		}
-		
-		function process_admin_options(){
-			parent::process_admin_options();
+        }
+
+        function process_admin_options()
+        {
+            parent::process_admin_options();
             $this->init_apple_pay_admin_settings();
 
-		}
+        }
 
         /**
          * Init Apple Pay Validation
@@ -1099,9 +1108,9 @@ function init_paylane()
         private function init_apple_pay_admin_settings()
         {
 
-			if(empty($this->settings['apple_pay_cert'])){
-				return;
-			}
+            if (empty($this->settings['apple_pay_cert'])) {
+                return;
+            }
 
             try {
                 $path = untrailingslashit($_SERVER['DOCUMENT_ROOT']);
@@ -1120,15 +1129,15 @@ function init_paylane()
                 } else {
                     $myfile = @fopen($fullpath, "r");
                     $content = @fread($myfile, filesize($fullpath));
-					@fclose($myfile);
-					
+                    @fclose($myfile);
+
                     if ($this->settings['apple_pay_cert'] != $content) {
                         $this->store_apple_pay_cert($fullpath, $this->settings['apple_pay_cert']);
                     }
                 }
 
             } catch (Exception $e) {
-				$this->update_option('apple_pay_cert','');
+                $this->update_option('apple_pay_cert', '');
                 $this->settings['apple_pay_cert'] = '';
                 $this->displayError($e);
             }
@@ -1153,7 +1162,7 @@ function init_paylane()
 					<p><?php echo $err->getMessage(); ?></p>
 				</div>
 				<?php
-			});
+});
         }
 
         /**
@@ -1213,7 +1222,7 @@ function init_paylane()
         {
             global $woocommerce;
 
-            wc_add_notice(__('Błąd płatności', 'wc-gateway-paylane').'<br>'.$error_message, 'error');
+            wc_add_notice(__('Payment error', 'wc-gateway-paylane') . '<br>' . $error_message, 'error');
             wp_redirect(wc_get_checkout_url());
             exit;
 
@@ -1234,8 +1243,6 @@ function init_paylane()
                 die('Empty communication id');
             }
 
-    
-
             foreach ($data as $notification) {
                 $order_id = $notification['text'];
                 $order = new WC_Order($order_id);
@@ -1246,38 +1253,52 @@ function init_paylane()
             die($_POST['communication_id']);
         }
 
-        private function parseNotification($notification, $order){
+        private function canUpdateStatus($currentNotifType, $newNotifType){
+            if($currentNotifType == 'S' && $newNotifType == 'R'){
+                return true;
+            } elseif($currentNotifType == 'R' && $newNotifType == 'S'){
+                return true;
+            } elseif(in_array($currentNotifType, ['S','R'])){
+                return false;
+            }
+
+            return true;
+        }
+
+        private function parseNotification($notification, $order)
+        {
             $id_sale = $notification['id_sale'];
 
             $notificationType = get_post_meta($order->get_id(), 'paylane-notification-type', true);
 
-            if($notificationType === false || ($notificationType !== false && !in_array($notificationType, ['S','R']))){
+            if ($notificationType === false || ($notificationType !== false && $this->canUpdateStatus($notificationType, $notification['type']))) {
                 //first time or not final type
 
                 if ($notification['type'] === 'S') {
-                    $order->add_order_note('PayLane: '.__('Transaction complete', 'wc-gateway-paylane'));
+                    $order->update_status($this->getCorrectOrderStatus($this->get_option('status_successful_order')), 'PayLane: ' . __('Transaction complete', 'wc-gateway-paylane'));
+                    
                 }
-    
+
                 if ($notification['type'] === 'R') {
-                    $order->add_order_note('PayLane: '.__('Refund complete', 'wc-gateway-paylane'));
+                    $order->update_status(WC_Gateway_Paylane::ORDER_STATUS_REFUNDED, 'PayLane: ' . __('Refund complete', 'wc-gateway-paylane'));
                 }
-    
+
                 if ($notification['type'] === 'RV') {
                     $order->update_status('on-hold', __('Reversal received', 'wc-gateway-paylane'));
                 }
-    
+
                 if ($notification['type'] === 'RRO') {
                     $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
                 }
-    
+
                 if ($notification['type'] === 'CAD') {
                     $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
                 }
-    
+
                 update_post_meta($order->get_id(), 'paylane-notification-timestamp', time());
                 update_post_meta($order->get_id(), 'paylane-notification-type', $notification['type']);
             }
-    
+
         }
 
         /**

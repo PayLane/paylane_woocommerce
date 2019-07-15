@@ -97,6 +97,11 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
         $this->init_settings();
         $this->paylane_settings = get_option('woocommerce_paylane_settings');
 
+
+        if(version_compare($woocommerce->version, '3.2.0','<')){
+            $this->enabled = $this->get_paylane_option($this->form_name.'_legacy_enabled','no');
+        }
+
     }
 
     /**
@@ -105,6 +110,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
     public function init_settings()
     {
         parent::init_settings();
+        
         $this->enabled = !empty($this->settings['enabled']) && 'yes' === $this->settings['enabled'] ? 'yes' : 'no';
     }
 
