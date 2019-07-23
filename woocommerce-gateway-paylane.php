@@ -510,8 +510,12 @@ function init_paylane()
                         $error_message .= " - " . $_POST['error_text'];
                     }
                 } else {
-                    $response['id_sale'] = $_POST['id_sale'];
-                    $this->set_order_paylane_id($response['description'], $response['id_sale']);
+                    if(!isset($_POST['id_sale'])){
+                        $this->print_error_page('Payment canceled. id_sale not found');
+                    }else{
+                        $response['id_sale'] = $_POST['id_sale'];
+                        $this->set_order_paylane_id($response['description'], $response['id_sale']);
+                    }
                 }
             } else {
                 $response['status'] = $_GET['status'];
@@ -532,8 +536,12 @@ function init_paylane()
                         $error_message .= " - " . $_GET['error_text'];
                     }
                 } else {
-                    $response['id_sale'] = $_GET['id_sale'];
-                    $this->set_order_paylane_id($response['description'], $response['id_sale']);
+                    if(!isset($_GET['id_sale'])){
+                        $this->print_error_page('Payment canceled. id_sale not found');
+                    }else{
+                        $response['id_sale'] = $_GET['id_sale'];
+                        $this->set_order_paylane_id($response['description'], $response['id_sale']);
+                    }
                 }
             }
 
