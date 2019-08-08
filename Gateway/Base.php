@@ -241,10 +241,12 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 
         if (!$method) {
             wc_add_notice(__('Unsupported payment method', 'wc-gateway-paylane'), 'error');
+            WCPL_Logger::log("[process_payment]\nUnsupported payment method\norder_id: ".$order_id,'error');
             return array('success' => false);
         }
 
         if (!$this->validate_fields()) {
+            WCPL_Logger::log("[process_payment]\nNOT valid fields\norder_id: ".$order_id,'error');
             return array('success' => false);
         }
 
@@ -276,6 +278,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 
                 if (is_null($payload) || !$this->isCorrectpayload($payload)) {
                     wc_add_notice(__('Incorrect Apple Pay payload', 'wc-gateway-paylane'), 'error');
+                    WCPL_Logger::log("[process_payment]\nIncorrect Apple Pay payload\norder_id: ".$order_id,'error');
                     return array('success' => false);
                 }
 
@@ -362,6 +365,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
         }
 
         $this->set_order_paylane_type($order_id, $method);
+        WCPL_Logger::log("[process_payment]\nWoocommerce process finished\norder_id: ".$order_id."\ntype: ".$method);
         return array(
             'result' => 'success',
             'redirect' => add_query_arg(array('order_id' => $order_id, 'type' => $method), $this->notify_link),
@@ -448,6 +452,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
             $this->checkBasicAuth();
         }
         if (empty($_POST['communication_id'])) {
+            WCPL_Logger::log("[handle_notification]\nEmpty communication id",'error');
             die('Empty communication id');
         }
 
@@ -472,22 +477,27 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 
             if ($notification['type'] === 'S') {
                 $order->add_order_note('PayLane: ' . __('Transaction complete', 'wc-gateway-paylane'));
+                WCPL_Logger::log("[handle_notification]\nTransaction complete\nsale_id: ".$id_sale);
             }
 
             if ($notification['type'] === 'R') {
                 $order->add_order_note('PayLane: ' . __('Refund complete', 'wc-gateway-paylane'));
+                WCPL_Logger::log("[handle_notification]\nRefund complete\nsale_id: ".$id_sale);
             }
 
             if ($notification['type'] === 'RV') {
                 $order->update_status('on-hold', __('Reversal received', 'wc-gateway-paylane'));
+                WCPL_Logger::log("[handle_notification]\nReversal received\nsale_id: ".$id_sale);
             }
 
             if ($notification['type'] === 'RRO') {
                 $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
+                WCPL_Logger::log("[handle_notification]\nRetrieval request / chargeback opened (RRO)\nsale_id: ".$id_sale);
             }
 
             if ($notification['type'] === 'CAD') {
                 $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
+                WCPL_Logger::log("[handle_notification]\nRetrieval request / chargeback opened (CAD)\nsale_id: ".$id_sale);
             }
 
             update_post_meta($order->get_id(), 'paylane-notification-timestamp', time());

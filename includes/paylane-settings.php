@@ -2,7 +2,6 @@
 /**
  * Settings for PayPal Gateway
  *
- * @author Endora <biuro@endora.pl> https://endora.pl
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -23,7 +22,7 @@ foreach ($statuses as $status => $status_name) {
 $options = array(
     'version' => array(
         'type' => 'title',
-        'description' => __('Version', 'wc-gateway-paylane') . ' 2.1.3',
+        'description' => __('Version', 'wc-gateway-paylane') . ' 2.1.4',
     ),
     'title' => array(
         'title' => __('Name', 'wc-gateway-paylane'),
@@ -112,6 +111,13 @@ $options = array(
         'type' => 'checkbox',
         'default' => 'yes',
     ),
+    'logging' => array(
+        'title' => __('Log events', 'wc-gateway-paylane').' ('.__('recommended', 'wc-gateway-paylane').')',
+        'type' => 'checkbox',
+        'default' => 'no',
+        'label' => __('Store debug messages', 'wc-gateway-paylane'),
+        'description' => sprintf(__('To see logs go to this %ssite%s and choose woocommerce-gateway-paylane-xxx.log', 'wc-gateway-paylane'),'<a href="'.esc_url_raw( admin_url( 'admin.php?page=wc-status&tab=logs' ) ).'">','</a>')
+    ),
     'notificaion' => array(
         'title' => __('Notification adress', 'wc-gateway-paylane'),
         'type' => 'title',
@@ -186,6 +192,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'class' => 'wc-enhanced-select',
         'default' => 'false',
         'desc_tip' => false,
+        'description'=>__('If you will choose YES option, ONLY cards with 3-D Secure will be accepted', 'wc-gateway-paylane'),
         'options' => array(
             'true' => __('YES', 'wc-gateway-paylane'),
             'false' => __('NO', 'wc-gateway-paylane'),

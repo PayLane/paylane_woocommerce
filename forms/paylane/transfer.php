@@ -1,7 +1,7 @@
 <?php if ( !defined( 'ABSPATH' ) ) exit;
 
 require_once __DIR__ . '/../../includes/paylane-banks.php';
-$paymentTypes = getBankTransferPaymentTypes();
+$paymentTypes = wcpl_getBankTransferPaymentTypes();
 
 ?>
 <div class="paylane-payment-form paylane-payment-form--polish-bank-transfers">

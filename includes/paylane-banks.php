@@ -1,6 +1,6 @@
 <?php if ( !defined( 'ABSPATH' ) ) exit;
 
-function getBankTransferPaymentTypes()
+function wcpl_getBankTransferPaymentTypes()
 {
 	$result = array(
 		'AB' => array(

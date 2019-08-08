@@ -1,6 +1,13 @@
 Changelog by Mind Joker Marcin Musiak <marcin@musiak.pl>
 =========================================================
 
+= 2.1.4 - 2019-08-07 = 
+* Fix the 3-D Secure flow when 3DS is required 
+* Add descriptions in the admin section 
+* Improved the non successful payments. From now client will be able to retry it using different payment method or different payment data 
+* Add debug logs feature 
+* Add new translations of payment errors
+
 = 2.1.3 - 2019-07-24 = 
 * Improve display payment methods names 
 * Add option to display/hide payment methods logo 

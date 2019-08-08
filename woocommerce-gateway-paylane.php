@@ -5,7 +5,7 @@
 /**
  * Plugin Name: WooCommerce PayLane Gateway
  * Description: PayLane (Polskie ePłatności Online) payment module for WooCommerce.
- * Version: 2.1.3
+ * Version: 2.1.4
  * Author: Paylane (Polskie ePłatności Online)
  * Author URI: https://paylane.pl
  * Plugin URI: https://github.com/PayLane/paylane_woocommerce
@@ -43,6 +43,9 @@ function init_paylane()
     // Localisation
     load_plugin_textdomain('wc-gateway-paylane', false, dirname(plugin_basename(__FILE__)) . '/languages');
     add_filter('plugin_row_meta', 'paylane_plugin_row_meta', 20, 4);
+    require_once __DIR__ . '/includes/paylane-errors.php';
+    require_once __DIR__ . '/includes/logger.php';
+
 
     if (!class_exists('WC_Payment_Gateway')) {
         add_action('admin_init', 'child_plugin_has_parent_plugin');
@@ -102,9 +105,12 @@ function init_paylane()
             {
                 $status = $client->idealBankCodes();
             } catch (Exception $e) {
+                WCPL_Logger::log("[getIdealBanks]\nException in idealBankCodes\n".$e->getMessage(),'error');
             }
 
             if (!$client->isSuccess()) {
+                // WCPL_Logger::log("[getIdealBanks]\nThis API method is not allowed for this merchant account",'notice');
+
                 $codes = __('This API method is not allowed for this merchant account.', 'wc-gateway-paylane');
             } else {
                 $codes .= '<select name="bank-code">';
@@ -298,13 +304,13 @@ function init_paylane()
                 wp_register_style(
                     'paylane-woocommerce', plugins_url(
                         'assets/css/paylane-woocommerce-' . $this->get_option('design') . '.css', __FILE__
-                    ), [], '213_' . $this->get_option('design'), 'all'
+                    ), [], '214_' . $this->get_option('design'), 'all'
                 );
                 wp_enqueue_style('paylane-woocommerce');
                 wp_enqueue_script( 'jquery-mask-form', plugin_dir_url(__FILE__) . 'assets/js/jquery.mask.min.js' , array( 'jquery' ));
                 wp_register_script(
                     'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', array('jquery', 'jquery-payment','jquery-mask-form'),
-                    '213', true
+                    '214', true
                 );
                 wp_enqueue_script(
                     'paylane-woocommerce-script'
@@ -319,14 +325,16 @@ function init_paylane()
         //Main function which sends data to PayLane service and get response
         function data_handler()
         {
-
             if (isset($_POST['content']) && ($this->enable_notification === 'yes')) {
 
                 if (!isset($_POST['communication_id']) || empty($_POST['communication_id'])) {
+                    WCPL_Logger::log("[data_handler]\nEmpty communication id",'error');
+
                     die('Empty communication id');
                 }
 
                 if (!empty(($this->get_option('notification_token_PayLane'))) && ($this->get_option('notification_token_PayLane') !== $_POST['token'])) {
+                    WCPL_Logger::log("[data_handler]\nWrong token\n"."communication_id: ".$_POST['communication_id'],'error');
                     die('Wrong token');
                 }
 
@@ -334,6 +342,7 @@ function init_paylane()
                 {
                     $this->handle_notification($_POST['content'], $_POST['token'], $_POST['communication_id']);
                 } catch (Exception $e) {
+                    WCPL_Logger::log("[data_handler] Exception in handle_notification\n".$e->getMessage()."\ncommunication_id: ".$_POST['communication_id'],'error');
                     die($e->getMessage());
                 }
                 unset($_POST['content']);
@@ -370,17 +379,27 @@ function init_paylane()
                                     {
                                         $result = $client->checkCard3DSecureByToken($params);
                                     } catch (Exception $e) {
+                                        WCPL_Logger::log("[data_handler]\nException in checkCard3DSecureByToken\n".$e->getMessage()."\ncommunication_id: ".$_POST['communication_id'],'error');
                                         $this->print_error_page($e->getMessage());
-                                        return;
+                                        exit;
                                     }
+
 
                                     if ($client->isSuccess()) {
                                         if (true == $result['is_card_enrolled']) {
                                             wp_redirect($result['redirect_url']);
                                             exit;
                                         }
+                                        WCPL_Logger::log("[data_handler]\ncheckCard3DSecure CARD NOT ENROLLER",'warning');
+                                        $this->finish_order($_GET['order_id'], $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED), __('Card not enrolled in 3-D Secure', 'wc-gateway-paylane'));
+                                        $this->print_error_page(__('Card not enrolled in 3-D Secure', 'wc-gateway-paylane'));
+                                        exit;
                                     } else {
-                                        $status = $client->cardSaleByToken($params);
+                                        WCPL_Logger::log("[data_handler]\ncheckCard3DSecureByToken is NOT SUCCESS\norder_id: ".$_GET['order_id'],'warning');
+                                        // $status = $client->cardSaleByToken($params);
+                                        $this->finish_order($_GET['order_id'], $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED), __('3-D Secure verification failed', 'wc-gateway-paylane'));
+                                        $this->print_error_page(__('3-D Secure verification failed', 'wc-gateway-paylane'));
+                                        exit;
                                     }
                                 } else {
                                     $status = $client->cardSaleByToken($params);
@@ -412,11 +431,14 @@ function init_paylane()
                                 break;
                         }
                     } catch (Exception $e) {
+                        WCPL_Logger::log("[data_handler]\nException in the method ".$type."\n".$e->getMessage()."\ncommunication_id: ".$_POST['communication_id'],'error');
                         $this->print_error_page($e->getMessage());
-                        return;
+                        exit;
                     }
 
                     if ($client->isSuccess()) {
+                        WCPL_Logger::log("[data_handler]\nPayment SUCCESS\nmethod: ".$type."\nsale_id: ".$status['id_sale']."\norder_id: ".$_GET['order_id']);
+
                         switch ($type) {
                             case WC_Gateway_Paylane::PAYMENT_METHOD_CREDIT_CARD:
                                 echo __("Success, id_sale:", 'wc-gateway-paylane') . " {$status['id_sale']} \n";
@@ -463,13 +485,17 @@ function init_paylane()
                             $error_message .= __('Error ID:', 'wc-gateway-paylane') . " {$status['error']['id_error']} <br>";
                         }
 
+                        $errorNumber = null;
                         if (isset($status['error']['error_number'])) {
+                            $errorNumber = $status['error']['error_number'];
                             $error_message .= __('Error number:', 'wc-gateway-paylane') . " {$status['error']['error_number']} <br>";
                         }
 
                         if (isset($status['error']['error_description'])) {
-                            $error_message .= __('Error description:', 'wc-gateway-paylane') . " {$status['error']['error_description']}";
+                            $error_message .= __('Error description:', 'wc-gateway-paylane') . " {$this->translate_error_description($status['error']['error_description'], $errorNumber )}";
                         }
+
+                        WCPL_Logger::log("[data_handler]\n".$type." is NOT success \ncommunication_id: ".$_POST['communication_id']."\nsale_id: ".$status['id_sale']."\norder_id: ".$_GET['order_id']."\n".$error_message,'error');
 
                         $this->finish_order($_GET['order_id'], $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED), $error_message);
                         $this->print_error_page($error_message);
@@ -492,9 +518,12 @@ function init_paylane()
                 $order_id = $_GET['description'];
             }
 
+            WCPL_Logger::log("[response_check]\nResponse\nGET: ".json_encode(WCPL_Logger::secure($_GET))."\nPOST: ".json_encode(WCPL_Logger::secure($_POST)),'info');
+
             $type = get_post_meta($order_id, 'paylane-type', true);
             $redirect_version = $this->get_option('paylane_redirect_version');
 
+            //todo - post/get na gore i potem tylko po zmiennych - marketplace refactor
             if ($redirect_version == 'POST') {
                 $response['status'] = $_POST['status'];
                 $response['description'] = $_POST['description'];
@@ -502,25 +531,32 @@ function init_paylane()
                 $response['currency'] = $_POST['currency'];
                 $response['hash'] = $_POST['hash'];
 
+
+                $error_message = null;
                 if (isset($_POST['id_error']) || isset($_POST['error_code'])) {
                     $response['id_error'] = $_POST['id_error'];
-                    $error_message = "Error: " . $_POST['id_error'];
+                    $error_message .= __("Error ID:", 'wc-gateway-paylane') . " {$_POST['id_error']} <br>";
 
+                    $errorNumber = null;
                     if (isset($_POST['error_code'])) {
-                        $error_message .= " - " . $_POST['error_code'];
+                        $errorNumber = $_POST['error_code'];
+                        $error_message .= __("Error number:", 'wc-gateway-paylane') . " {$_POST['error_code']} <br>";
                     }
 
                     if (isset($_POST['error_text'])) {
-                        $error_message .= " - " . $_POST['error_text'];
+                        $error_message .= __("Error description:", 'wc-gateway-paylane') . " {$this->translate_error_description($_POST['error_text'], $errorNumber)}";
                     }
                 } else {
                     if(!isset($_POST['id_sale'])){
-                        $this->print_error_page(__('Payment canceled', 'wc-gateway-paylane'));
+                        WCPL_Logger::log("[response_check]\nPayment canceled \norder_id: ".$order_id,'warning');
                         $order = new WC_Order($order_id);
-                        wp_redirect($order->get_checkout_order_received_url());
+                        $this->finish_order($order_id, $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED), __('Payment canceled', 'wc-gateway-paylane'));
+                        $this->print_error_page(__('Payment canceled', 'wc-gateway-paylane'));
+                        exit;
                     }else{
                         $response['id_sale'] = $_POST['id_sale'];
                         $this->set_order_paylane_id($response['description'], $response['id_sale']);
+                        WCPL_Logger::log("[response_check]\n".$response['description']."\norder_id: ".$order_id."\nsale_id: ".$response['id_sale']);
                     }
                 }
             } else {
@@ -530,25 +566,31 @@ function init_paylane()
                 $response['currency'] = $_GET['currency'];
                 $response['hash'] = $_GET['hash'];
 
+                $error_message = null;
                 if (isset($_GET['id_error']) || isset($_GET['error_code'])) {
                     $response['id_error'] = $_GET['id_error'];
-                    $error_message = "Error: " . $_GET['id_error'];
+                    $error_message .= __("Error ID:", 'wc-gateway-paylane') . " {$_GET['id_error']} <br>";
 
+                    $errorNumber = null;
                     if (isset($_GET['error_code'])) {
-                        $error_message .= " - " . $_GET['error_code'];
+                        $errorNumber = $_GET['error_code'];
+                        $error_message .= __("Error number:", 'wc-gateway-paylane') . " {$_GET['error_code']} <br>";
                     }
 
                     if (isset($_GET['error_text'])) {
-                        $error_message .= " - " . $_GET['error_text'];
+                        $error_message .= __("Error description:", 'wc-gateway-paylane') . " {$this->translate_error_description($_GET['error_text'], $errorNumber)}";
                     }
                 } else {
                     if(!isset($_GET['id_sale'])){
-                        $this->print_error_page(__('Payment canceled', 'wc-gateway-paylane'));
+                        WCPL_Logger::log("[responce_check]\nPayment canceled \norder_id: ".$order_id,'warning');
                         $order = new WC_Order($order_id);
-                        wp_redirect($order->get_checkout_order_received_url());
+                        $this->finish_order($order_id, $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED), __('Payment canceled', 'wc-gateway-paylane'));
+                        $this->print_error_page(__('Payment canceled', 'wc-gateway-paylane'));
+                        exit;
                     }else{
                         $response['id_sale'] = $_GET['id_sale'];
                         $this->set_order_paylane_id($response['description'], $response['id_sale']);
+                        WCPL_Logger::log("[response_check]\n".$response['description']."\norder_id: ".$order_id."\nsale_id: ".$response['id_sale']);
                     }
                 }
             }
@@ -571,16 +613,20 @@ function init_paylane()
                                 $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_PENDING),
                                 __('Payment awaiting confirmation', 'wc-gateway-paylane')
                             );
+                            WCPL_Logger::log("[response_check]\nPayment awaiting confirmation\norder_id: ".$order_id."\nsale_id: ".$response['id_sale']);
                         } else {
                             @session_start();
                             $this->finish_order($response['description'], $this->get_option('status_successful_order'));
+                            WCPL_Logger::log("[response_check]\nFinish order: ".$response['description']."\norder_id: ".$order_id."\nsale_id: ".$response['id_sale']);
                         }
                     }
                 } else {
+                    WCPL_Logger::log("[response_check]\nWrong hash \norder_id: ".$order_id."\nsale_id: ".$response['id_sale']."\ndescription: ".$response['description'],'error');
                     $this->finish_order($response['description'], $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED), __('Wrong hash', 'wc-gateway-paylane'));
                     $this->print_error_page(__('Wrong hash', 'wc-gateway-paylane'));
                 }
             } else {
+                WCPL_Logger::log("[response_check]\n".$error_message."\norder_id: ".$order_id."\nsale_id: ".$response['id_sale']."\ndescription: ".$response['description'],'error');
                 $this->finish_order($response['description'], $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED), $error_message);
                 $this->print_error_page($error_message);
             }
@@ -605,9 +651,11 @@ function init_paylane()
                 if ($response['status'] !== 'ERROR') {
                     $response['id'] = $_POST['id_3dsecure_auth'];
                 } else {
-                    $error_message .= "Error: " . $response['status'];
+                    $error_message .= " Error: " . $response['status'];
                 }
-            } else {
+            } 
+            
+            if($redirect_version == 'GET' || is_null($response['hash'])){
                 $response['status'] = $_GET['status'];
                 $response['description'] = $_GET['description'];
                 $response['amount'] = $_GET['amount'];
@@ -619,7 +667,7 @@ function init_paylane()
                 if ($response['status'] !== 'ERROR') {
                     $response['id'] = $_GET['id_3dsecure_auth'];
                 } else {
-                    $error_message .= "Error: " . $response['status'];
+                    // $error_message .= "Error: " . $response['status'];
                 }
             }
 
@@ -636,7 +684,7 @@ function init_paylane()
             }
 
             if ($response['status'] === 'ERROR' || $error_message != "") {
-                $error_message .= __('Error, 3-D auth transaction declined', 'wc-gateway-paylane');
+                $error_message .= ' '.__('Error, 3-D auth transaction declined', 'wc-gateway-paylane');
             } else {
                 require_once __DIR__ . '/includes/paylane-rest.php';
                 $client = new PayLaneRestClient($this->get_option('login_PayLane'), $this->get_option('password_PayLane'));
@@ -646,11 +694,13 @@ function init_paylane()
                 {
                     $status = $client->saleBy3DSecureAuthorization(array('id_3dsecure_auth' => $response['id']));
                 } catch (Exception $e) {
+                    WCPL_Logger::log("[response_check_3ds]\nException in saleBy3DSecureAuthorization\n".$e->getMessage()."\nresponse_id: ".$response['id'],'error');
                     var_dump($e->getMessage());die;
                 }
 
                 if ($client->isSuccess()) {
                     $this->set_order_paylane_id($response['description'], $status['id_sale']);
+                    WCPL_Logger::log("[response_check_3ds]\nsaleBy3DSecureAuthorization SUCCESS\nresponse_id: ".$response['id']);
                 } else {
                     $error_message .= __('Error 3-D Secure payment', 'wc-gateway-paylane');
                 }
@@ -668,9 +718,11 @@ function init_paylane()
                                 $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_PENDING),
                                 __("Payment awaiting confirmation", 'wc-gateway-paylane')
                             );
+                            WCPL_Logger::log("[response_check_3ds]\nPayment awaiting confirmation\nresponse_id: ".$response['id']."\ndescription: ".$response['description'],'error');
                         } else {
                             @session_start();
                             $this->finish_order($response['description'], $this->get_option('status_successful_order'));
+                            WCPL_Logger::log("[response_check_3ds]\nFinish order\nresponse_id: ".$response['id']."\ndescription: ".$response['description']);
                         }
                     }
                 } else {
@@ -679,6 +731,7 @@ function init_paylane()
                         $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED),
                         $error_message
                     );
+                    WCPL_Logger::log("[response_check_3ds]\nFinish order: ".$error_message."\nresponse_id: ".$response['id']."\ndescription: ".$response['description'],'error');
                     $this->print_error_page($error_message);
                 }
             } else {
@@ -686,6 +739,7 @@ function init_paylane()
                     $response['description'], $this->get_order_status_id(WC_Gateway_Paylane::ORDER_STATUS_FAILED),
                     $error_message
                 );
+                WCPL_Logger::log("[response_check_3ds]\nFinish order: ".$error_message,'error');
                 $this->print_error_page($error_message);
                 exit;
             }
@@ -830,6 +884,7 @@ function init_paylane()
                 $info = $client->getSaleInfo(array('id_sale' => $id));
 
                 $order->add_order_note(__('PayLane transaction status: ', 'wc-gateway-paylane') . $info['status']);
+                WCPL_Logger::log("[check_direct_debit]\nPayLane transaction status: ".$info['status']."\nid_sale: ".$id);
             }
         }
 
@@ -873,6 +928,20 @@ function init_paylane()
             } else {
                 WC_Subscriptions_Manager::process_subscription_payments_on_order($parent_order);
             }
+        }
+
+        private function translate_error_description($message, $code = null){
+            if(is_null($code)){
+                return $message;
+            }
+
+            $msg = wcpl_get_errors_by_code($code, $message);
+
+            if(is_null($msg)){
+                return $message;
+            }
+
+            return $msg;
         }
 
         private function getCorrectOrderStatus($state)
@@ -935,6 +1004,7 @@ function init_paylane()
                 );
 
                 $order->update_status('failed', $order_status_message);
+                WCPL_Logger::log("[finish_order]\nTransaction failed with reason: ".$message."\norder_id: ".$order_id, 'error');
                 return false;
             }
 
@@ -947,6 +1017,7 @@ function init_paylane()
             $order_status = $this->getCorrectOrderStatus($state);
 
             $order->update_status($order_status, $order_status_message);
+            WCPL_Logger::log("[finish_order]\nTransaction confirmed, payment method: ".$payment_label."\norder_id: ".$order_id);
             $return_url = $order->get_checkout_order_received_url();
             wp_redirect($return_url);
             exit;
@@ -976,11 +1047,12 @@ function init_paylane()
             try {
                 $status = $client->refund($refund_params);
             } catch (Exception $e) {
-
+                WCPL_Logger::log("[process_refund]\nException in refund\n".$e->getMessage()."\norder_id: ".$order_id,'error');
             }
 
             if ($client->isSuccess()) {
                 $order->add_order_note('Refund completed. ID: ' . $status['id_refund']);
+                WCPL_Logger::log("[process_refund]\nRefund completed. ID: " . $status['id_refund']."\norder_id: ".$order_id);
                 return true;
             } else {
                 $error_message = null;
@@ -988,15 +1060,18 @@ function init_paylane()
                     $error_message .= __("Error ID:", 'wc-gateway-paylane') . " {$status['error']['id_error']} <br>";
                 }
 
+                $errorNumber = null;
                 if (isset($status['error']['error_number'])) {
+                    $errorNumber = $status['error']['error_number'];
                     $error_message .= __("Error number:", 'wc-gateway-paylane') . " {$status['error']['error_number']} <br>";
                 }
 
                 if (isset($status['error']['error_description'])) {
-                    $error_message .= __("Error description:", 'wc-gateway-paylane') . " {$status['error']['error_description']}";
+                    $error_message .= __("Error description:", 'wc-gateway-paylane') . " {$this->translate_error_description($status['error']['error_description'], $errorNumber)}";
                 }
 
                 $order->add_order_note(__('Refund Failed:', 'wc-gateway-paylane') . ' ' . $error_message);
+                WCPL_Logger::log("[process_refund]\nRefund Failed: " . $error_message."\norder_id: ".$order_id,'error');
                 return false;
             }
         }
@@ -1139,7 +1214,7 @@ function init_paylane()
 
                 if (!file_exists($fullpath)) {
                     if (!file_exists($path . '/' . $dir)) {
-                        if (!@mkdir($path . '/' . $dir, 0755)) {
+                        if (!@mkdir($path . '/' . $dir, 0755)) {                            
                             throw new Exception(__('Unable to create certificate folder. Please create "./well-known/apple-developer-merchantid-domain-association.txt" file into your main domain directory with certificate text.', 'wc-gateway-paylane'));
                         }
                     }
@@ -1159,6 +1234,7 @@ function init_paylane()
                 $this->update_option('apple_pay_cert', '');
                 $this->settings['apple_pay_cert'] = '';
                 $this->displayError($e);
+                WCPL_Logger::log("[init_apple_pay_admin_settings]\nException:\n".$e->getMessage(),'error');
             }
         }
 
@@ -1254,13 +1330,16 @@ function init_paylane()
          */
         function handle_notification($data, $token, $communication_id)
         {
+            WCPL_Logger::log("[handle_notification]\nResponse\nData: ".json_encode(WCPL_Logger::secure($data)),'info');
             // check communication
             if (!empty($this->get_option('notification_login_PayLane')) && !empty($this->get_option('notification_password_PayLane'))) {
                 $this->checkBasicAuth();
             }
             if (empty($_POST['communication_id'])) {
+                WCPL_Logger::log("[handle_notification]\nEmpty communication id",'error');
                 die('Empty communication id');
             }
+            
 
             foreach ($data as $notification) {
                 $order_id = $notification['text'];
@@ -1295,23 +1374,28 @@ function init_paylane()
 
                 if ($notification['type'] === 'S') {
                     $order->update_status($this->getCorrectOrderStatus($this->get_option('status_successful_order')), 'PayLane: ' . __('Transaction complete', 'wc-gateway-paylane'));
+                    WCPL_Logger::log("[handle_notification]\nTransaction complete (S)\nsale_id: ".$id_sale);
                     
                 }
 
                 if ($notification['type'] === 'R') {
                     $order->update_status(WC_Gateway_Paylane::ORDER_STATUS_REFUNDED, 'PayLane: ' . __('Refund complete', 'wc-gateway-paylane'));
+                    WCPL_Logger::log("[handle_notification]\nRefund complete (R)\nsale_id: ".$id_sale);
                 }
 
                 if ($notification['type'] === 'RV') {
                     $order->update_status('on-hold', __('Reversal received', 'wc-gateway-paylane'));
+                    WCPL_Logger::log("[handle_notification]\nReversal received (RV)\nsale_id: ".$id_sale);
                 }
 
                 if ($notification['type'] === 'RRO') {
                     $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
+                    WCPL_Logger::log("[handle_notification]\nRetrieval request / chargeback opened (RRO)\nsale_id: ".$id_sale);
                 }
 
                 if ($notification['type'] === 'CAD') {
                     $order->update_status('on-hold', __('Retrieval request / chargeback opened', 'wc-gateway-paylane'));
+                    WCPL_Logger::log("[handle_notification]\nRetrieval request / chargeback opened (CAD)\nsale_id: ".$id_sale);
                 }
 
                 update_post_meta($order->get_id(), 'paylane-notification-timestamp', time());
