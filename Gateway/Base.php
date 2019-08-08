@@ -57,7 +57,6 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
 
         $this->id = $this->gateway_id;
         $this->has_fields = true;
-        $this->method_title = 'PayLane: ' . $this->getMethodTitle();
         $this->notify_link = add_query_arg('wc-api', 'WC_Gateway_Paylane', home_url('/'));
         $this->notify_link_3ds = add_query_arg('wc-api', 'WC_Gateway_Paylane_3ds', home_url('/'));
         $this->supports = array(
@@ -72,15 +71,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
             'subscription_payment_method_change',
         );
 
-        $this->title = $this->getMethodTitle();
-        $this->description = $this->get_paylane_option('description');
-        $this->payment_method = $this->get_paylane_option('payment_method');
-        $this->secure_form = $this->get_paylane_option('secure_form');
-        $this->merchant_id = $this->get_paylane_option('merchant_id');
-        $this->fraud_check = $this->get_paylane_option('fraud_check');
-        $this->ds_check = $this->get_paylane_option('3ds_check');
-        $this->enable_notification = $this->get_paylane_option('notifications_enabled');
-        $this->design = $this->get_paylane_option('design', 'basic');
+     
         $this->first_name = '';
         $this->last_name = '';
 
@@ -97,9 +88,19 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
         $this->init_settings();
         $this->paylane_settings = get_option('woocommerce_paylane_settings');
 
+        $this->method_title = 'PayLane: ' . $this->getMethodTitle();
+        $this->description = $this->get_paylane_option('description');
+        $this->payment_method = $this->get_paylane_option('payment_method');
+        $this->secure_form = $this->get_paylane_option('secure_form');
+        $this->merchant_id = $this->get_paylane_option('merchant_id');
+        $this->fraud_check = $this->get_paylane_option('fraud_check');
+        $this->ds_check = $this->get_paylane_option('3ds_check');
+        $this->enable_notification = $this->get_paylane_option('notifications_enabled');
+        $this->design = $this->get_paylane_option('design', 'basic');
+        $this->title = $this->getMethodTitle();
 
-        if(version_compare($woocommerce->version, '3.2.0','<')){
-            $this->enabled = $this->get_paylane_option($this->form_name.'_legacy_enabled','no');
+        if (version_compare($woocommerce->version, '3.2.0', '<')) {
+            $this->enabled = $this->get_paylane_option($this->form_name . '_legacy_enabled', 'no');
         }
 
     }
@@ -110,7 +111,7 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
     public function init_settings()
     {
         parent::init_settings();
-        
+
         $this->enabled = !empty($this->settings['enabled']) && 'yes' === $this->settings['enabled'] ? 'yes' : 'no';
     }
 
@@ -139,6 +140,20 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
         return get_called_class();
     }
 
+    protected function modTitle($org, $custom, $disableSufix = false){
+        $org = trim($org);
+        $custom = trim($custom);
+        if(is_null($custom) || empty($custom) || $org == $custom){
+            $sufix = '';
+            if(!$disableSufix){
+                $sufix = ' (PayLane)';
+            }
+            return $org.$sufix;
+        }
+
+        return $custom;
+    }
+
     /**
      * @param string $version
      * @return bool
@@ -163,9 +178,11 @@ abstract class Paylane_Gateway_Base extends WC_Payment_Gateway
     {
         $iconUrl = plugins_url('../assets/paylane.png', __FILE__);
         $iconHtml = '';
-        $iconHtml .= '<img src="' . $iconUrl . '" class="paylane-payment-method-label-logo" alt="' . esc_attr__(
-            'PayLane image', 'woocommerce'
-        ) . '">';
+        if ($this->get_paylane_option('display_payment_methods_logo','yes') == 'yes') {
+            $iconHtml .= '<img src="' . $iconUrl . '" class="paylane-payment-method-label-logo" alt="' . esc_attr__(
+                'PayLane image', 'woocommerce'
+            ) . '">';
+        }
 
         return apply_filters('woocommerce_gateway_icon', $iconHtml, $this->id);
     }

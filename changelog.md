@@ -1,6 +1,12 @@
 Changelog by Mind Joker Marcin Musiak <marcin@musiak.pl>
 =========================================================
 
+= 2.1.3 - 2019-07-24 = 
+* Improve display payment methods names 
+* Add option to display/hide payment methods logo 
+* Add input mask to fields: credit card number, credit card valid date, credit card CVV/CVC 
+* Improve display choosed bank type in bank transfer method
+
 = 2.1.2 - 2019-07-15 =
 * Support older versions of WooCommerce
 * Add switches for payment methods in older versions of WooCommerce

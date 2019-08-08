@@ -6,7 +6,7 @@ $paymentTypes = getBankTransferPaymentTypes();
 ?>
 <div class="paylane-payment-form paylane-payment-form--polish-bank-transfers">
   <div class="paylane-payment-form__text">
-    <?php echo __( 'You will be redirected to your bank\'s website payment.', 'wc-gateway-paylane' ); ?>
+  <?php echo sprintf(__( 'You will be redirected to the %s website payment.', 'wc-gateway-paylane' ),'<strong id="paylane-payment-form-bank-transfer-choosed-method">-</strong>'); ?>
   </div>
 
 

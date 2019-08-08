@@ -29,6 +29,7 @@ $fields = array(
         'autocomplete' => 'no',
         'priority' => 110,
         'placeholder' => __('MM / YY', 'wc-gateway-paylane'),
+        'pattern'=> "(1[0-2]|0[1-9])\/(1[5-9]|2\d)"
     ),
     'cc_security_code' => array(
         'label' => __( 'CVV/CVC', 'wc-gateway-paylane' ),

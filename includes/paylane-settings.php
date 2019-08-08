@@ -23,7 +23,7 @@ foreach ($statuses as $status => $status_name) {
 $options = array(
     'version' => array(
         'type' => 'title',
-        'description' => __('Version', 'wc-gateway-paylane') . ' 2.1.2',
+        'description' => __('Version', 'wc-gateway-paylane') . ' 2.1.3',
     ),
     'title' => array(
         'title' => __('Name', 'wc-gateway-paylane'),
@@ -107,6 +107,11 @@ $options = array(
             'paylane' => __('PayLane', 'wc-gateway-paylane'),
         ),
     ),
+    'display_payment_methods_logo' => array(
+        'title' => __('Display payment methods logo', 'wc-gateway-paylane'),
+        'type' => 'checkbox',
+        'default' => 'yes',
+    ),
     'notificaion' => array(
         'title' => __('Notification adress', 'wc-gateway-paylane'),
         'type' => 'title',
@@ -155,7 +160,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
         'type' => 'text',
         'description' => '',
-        'default' => __("Secure Form", 'wc-gateway-paylane'),
+        'default' => '',
     ),
     'merchant_id' => array(
         'title' => __('Merchant ID', 'wc-gateway-paylane'),
@@ -173,7 +178,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
         'type' => 'text',
         'description' => '',
-        'default' => __('Credit Card', 'wc-gateway-paylane'),
+        'default' => '',
     ),
     '3ds_check' => array(
         'title' => __('3ds Check', 'wc-gateway-paylane'),
@@ -195,7 +200,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
         'type' => 'text',
         'description' => '',
-        'default' => __("Bank Transfer", 'wc-gateway-paylane'),
+        'default' => '',
     ),
     'sepa' => array(
         'title' => __('Direct Debit (SEPA)', 'wc-gateway-paylane'),
@@ -206,7 +211,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
         'type' => 'text',
         'description' => '',
-        'default' => __("SEPA Direct Debit", 'wc-gateway-paylane'),
+        'default' => '',
     ),
     'sofort' => array(
         'title' => __('SOFORT', 'wc-gateway-paylane'),
@@ -217,7 +222,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
         'type' => 'text',
         'description' => '',
-        'default' => __("Sofort", 'wc-gateway-paylane'),
+        'default' => '',
     ),
     'paypal' => array(
         'title' => __('PAYPAL', 'wc-gateway-paylane'),
@@ -228,7 +233,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
         'type' => 'text',
         'description' => '',
-        'default' => __("PayPal", 'wc-gateway-paylane'),
+        'default' => '',
     ),
     'ideal' => array(
         'title' => __('iDEAL', 'wc-gateway-paylane'),
@@ -239,7 +244,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
         'type' => 'text',
         'description' => '',
-        'default' => __("iDEAL", 'wc-gateway-paylane'),
+        'default' => '',
     ),
     'applepay' => array(
         'title' => __('Apple Pay', 'wc-gateway-paylane'),

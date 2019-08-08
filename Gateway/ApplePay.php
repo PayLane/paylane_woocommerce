@@ -26,7 +26,11 @@ class Paylane_Gateway_ApplePay extends Paylane_Gateway_Base
      */
     protected function getMethodTitle()
     {
-        return $this->get_paylane_option('apple_pay_name', __('Apple Pay', 'wc-gateway-paylane'));
+        if(!is_admin()){
+            return $this->modTitle(__( 'Apple Pay', 'wc-gateway-paylane' ), $this->get_paylane_option( 'apple_pay_name'));
+		}
+		return __( 'Apple Pay', 'wc-gateway-paylane' );
+     
     }
 
     /**
