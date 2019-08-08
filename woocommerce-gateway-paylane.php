@@ -5,7 +5,7 @@
 /**
  * Plugin Name: WooCommerce PayLane Gateway
  * Description: PayLane (Polskie ePłatności Online) payment module for WooCommerce.
- * Version: 2.1.2
+ * Version: 2.1.3
  * Author: Paylane (Polskie ePłatności Online)
  * Author URI: https://paylane.pl
  * Plugin URI: https://github.com/PayLane/paylane_woocommerce
@@ -298,16 +298,20 @@ function init_paylane()
                 wp_register_style(
                     'paylane-woocommerce', plugins_url(
                         'assets/css/paylane-woocommerce-' . $this->get_option('design') . '.css', __FILE__
-                    ), [], '211_' . $this->get_option('design'), 'all'
+                    ), [], '213_' . $this->get_option('design'), 'all'
                 );
                 wp_enqueue_style('paylane-woocommerce');
+                wp_enqueue_script( 'jquery-mask-form', plugin_dir_url(__FILE__) . 'assets/js/jquery.mask.min.js' , array( 'jquery' ));
                 wp_register_script(
-                    'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', array('jquery', 'jquery-payment'),
-                    '211', true
+                    'paylane-woocommerce-script', plugin_dir_url(__FILE__) . 'assets/js/paylane-woocommerce.js', array('jquery', 'jquery-payment','jquery-mask-form'),
+                    '213', true
                 );
                 wp_enqueue_script(
                     'paylane-woocommerce-script'
                 );
+
+                
+          
             }
 
         }
@@ -511,7 +515,9 @@ function init_paylane()
                     }
                 } else {
                     if(!isset($_POST['id_sale'])){
-                        $this->print_error_page('Payment canceled. id_sale not found');
+                        $this->print_error_page(__('Payment canceled', 'wc-gateway-paylane'));
+                        $order = new WC_Order($order_id);
+                        wp_redirect($order->get_checkout_order_received_url());
                     }else{
                         $response['id_sale'] = $_POST['id_sale'];
                         $this->set_order_paylane_id($response['description'], $response['id_sale']);
@@ -537,7 +543,9 @@ function init_paylane()
                     }
                 } else {
                     if(!isset($_GET['id_sale'])){
-                        $this->print_error_page('Payment canceled. id_sale not found');
+                        $this->print_error_page(__('Payment canceled', 'wc-gateway-paylane'));
+                        $order = new WC_Order($order_id);
+                        wp_redirect($order->get_checkout_order_received_url());
                     }else{
                         $response['id_sale'] = $_GET['id_sale'];
                         $this->set_order_paylane_id($response['description'], $response['id_sale']);
@@ -1099,6 +1107,7 @@ function init_paylane()
         {
             add_filter('woocommerce_payment_gateways', array($this, 'add_paylane_gateway'));
             add_filter('woocommerce_available_payment_gateways', array($this, 'disable_paylane_main_gateway'));
+
         }
 
         function process_admin_options()
@@ -1107,6 +1116,8 @@ function init_paylane()
             $this->init_apple_pay_admin_settings();
 
         }
+
+       
 
         /**
          * Init Apple Pay Validation
