@@ -55,7 +55,7 @@ $fields = array(
       <?php
         woocommerce_form_field( $key, $field );
       ?>
-        <div class="paylane-payment-form__error-message" data-paylane-error-message="<?php echo $key ?>"></div>
+        <div class="paylane-payment-form__error-message" data-paylane-error-message="<?php echo esc_attr($key) ?>"></div>
       </div>
 
       <?php
@@ -70,7 +70,7 @@ $fields = array(
 <script type="text/javascript">
   //<![CDATA[
   window.addEventListener("load", function () {
-    PayLane.setPublicApiKey("<?php echo $api_key; ?>");
+    PayLane.setPublicApiKey("<?php echo esc_attr($api_key); ?>");
   });
   //]]>
 </script>

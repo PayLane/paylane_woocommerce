@@ -15,31 +15,31 @@ $statuses = wc_get_order_statuses();
 $i = 0;
 
 foreach ($statuses as $status => $status_name) {
-    $order_status[$status] = __(esc_html($status_name), 'wc-gateway-paylane');
+    $order_status[$status] = __(($status_name), 'wc-gateway-paylane');
     $i++;
 }
 
 $options = array(
     'version' => array(
         'type' => 'title',
-        'description' => __('Version', 'wc-gateway-paylane') . ' 2.1.4',
+        'description' => __('Version', 'wc-gateway-paylane') . ' 2.2.3',
     ),
     'title' => array(
         'title' => __('Name', 'wc-gateway-paylane'),
         'type' => 'text',
-        'default' => __('Paylane', 'wc-gateway-paylane'),
+        'default' => __('Polskie ePłatności', 'wc-gateway-paylane'),
         'desc_tip' => true,
     ),
     'description' => array(
         'title' => __('Description', 'wc-gateway-paylane'),
         'type' => 'textarea',
         'description' => __('Description.', 'wc-gateway-paylane'),
-        'default' => __('Pay with PayLane.', 'wc-gateway-paylane'),
+        'default' => __('Pay with Polskie ePłatności.', 'wc-gateway-paylane'),
     ),
     'connection_mode' => array(
-        'title' => __('PayLane connection method', 'wc-gateway-paylane'),
+        'title' => __('Polskie ePłatności connection method', 'wc-gateway-paylane'),
         'type' => 'select',
-        'description' => __('Set the PayLane connection method SecureForm/API.', 'wc-gateway-paylane'),
+        'description' => __('Set the Polskie ePłatności connection method SecureForm/API.', 'wc-gateway-paylane'),
         'default' => 'API',
         'class' => 'wc-enhanced-select',
         'options' => array(
@@ -83,7 +83,7 @@ $options = array(
         'title' => __('Redirect method', 'wc-gateway-paylane'),
         'type' => 'select',
         'class' => 'wc-enhanced-select',
-        'description' => __('PayLane response redirect method', 'wc-gateway-paylane'),
+        'description' => __('Polskie ePłatności response redirect method', 'wc-gateway-paylane'),
         'default' => 'POST',
         'desc_tip' => true,
         'options' => array(
@@ -103,7 +103,7 @@ $options = array(
         'default' => 'paylane',
         'options' => array(
             'basic' => __('Basic', 'wc-gateway-paylane'),
-            'paylane' => __('PayLane', 'wc-gateway-paylane'),
+            'paylane' => __('Polskie ePłatności Online', 'wc-gateway-paylane'),
         ),
     ),
     'display_payment_methods_logo' => array(
@@ -123,17 +123,8 @@ $options = array(
         'type' => 'title',
         'description' => sprintf(
             __(
-                'Notifications is a service that simplifies automatic communication between your shop and PayLane. A notification has information about payment status.<br><br>
-							<big><strong>It is Highly recommended to enable notifications</strong></big>.<br>
-							<br>
-<strong>To enable notifications</strong>:<br>
-- Chose individual login and password and enter them below (it should be safe login and password, <strong>not the same as API login/password or merchant panel login/password</strong>)<br>
-<br>
-- Send to us on e-mail (support@paylane.com) you notification login, password and notification address, <br>
-(Your notification address: <code>%s</code>)<br>
-<br>
-We will send you Notification token to fill inside this field', 'wc-gateway-paylane'
-            ), add_query_arg('wc-api', 'WC_Gateway_Paylane', home_url('/'))
+                'Notifications is a service that simplifies automatic communication between your shop and Polskie ePłatności. A notification has information about payment status.<br><br><big><strong>It is Highly recommended to enable notifications</strong></big>.<br><br><strong>To enable notifications</strong>:<br>- Chose individual login and password and enter them below (it should be safe login and password, <strong>not the same as API login/password or merchant panel login/password</strong>)<br><br>- Send to us on e-mail (support@paylane.com) you notification login, password and notification address, <br>(Your notification address: <code>%s</code>)<br><br>We will send you Notification token to fill inside this field', 'wc-gateway-paylane'),
+                 add_query_arg('wc-api', 'WC_Gateway_Paylane', home_url('/'))
         ),
     ),
     'notification_login_PayLane' => array(
@@ -160,7 +151,7 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
     'secure_form' => array(
         'title' => __('Secure Form', 'wc-gateway-paylane'),
         'type' => 'title',
-        'description' => __("Customers will be redirected to the PayLane Secure Form for payment", "wc-gateway-paylane"),
+        'description' => __("Customers will be redirected to the Polskie ePłatności Secure Form for payment", "wc-gateway-paylane"),
     ),
     'secure_form_name' => array(
         'title' => __('Custom Payment Method Name', 'wc-gateway-paylane'),
@@ -186,18 +177,18 @@ We will send you Notification token to fill inside this field', 'wc-gateway-payl
         'description' => '',
         'default' => '',
     ),
-    '3ds_check' => array(
-        'title' => __('3ds Check', 'wc-gateway-paylane'),
-        'type' => 'select',
-        'class' => 'wc-enhanced-select',
-        'default' => 'false',
-        'desc_tip' => false,
-        'description'=>__('If you will choose YES option, ONLY cards with 3-D Secure will be accepted', 'wc-gateway-paylane'),
-        'options' => array(
-            'true' => __('YES', 'wc-gateway-paylane'),
-            'false' => __('NO', 'wc-gateway-paylane'),
-        ),
-    ),
+    // '3ds_check' => array(
+    //     'title' => __('3ds Check', 'wc-gateway-paylane'),
+    //     'type' => 'select',
+    //     'class' => 'wc-enhanced-select',
+    //     'default' => 'true',
+    //     'desc_tip' => false,
+    //     'description'=>__('If you will choose YES option, ONLY cards with 3-D Secure will be accepted', 'wc-gateway-paylane'),
+    //     'options' => array(
+    //         'true' => __('YES', 'wc-gateway-paylane'),
+    //         'false' => __('NO', 'wc-gateway-paylane'),
+    //     ),
+    // ),
     'transfer' => array(
         'title' => __('Bank Wire Transfer', 'wc-gateway-paylane'),
         'type' => 'title',

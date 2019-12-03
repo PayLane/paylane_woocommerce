@@ -581,7 +581,7 @@ class PayLaneRestClient
 
         if (0 < curl_errno($ch))
         {
-            throw new \Exception('Unable to connect to ' . $this->api_url . ' Error: ' . curl_error($ch));
+            throw new \Exception('Unable to connect to ' . $this->api_url . $method . ' Error: ' . curl_error($ch));
         }
 
         curl_close($ch);

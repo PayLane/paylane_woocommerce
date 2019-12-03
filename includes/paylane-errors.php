@@ -173,7 +173,7 @@ function wcpl_get_errors_by_code($code, $message)
 
 		801 => __("Wrong input data", 'wc-gateway-paylane'),
 		802 => __("Paypal server error", 'wc-gateway-paylane'),
-		803 => __("Paylane token not found in database", 'wc-gateway-paylane'),
+		803 => __("Polskie ePłatności token not found in database", 'wc-gateway-paylane'),
 		804 => __("Transaction not found", 'wc-gateway-paylane'),
 		805 => __("Paypal checkout id not found in database", 'wc-gateway-paylane'),
 		806 => __("Wrong PayPal rebilling period", 'wc-gateway-paylane'),

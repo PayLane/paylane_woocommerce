@@ -55,14 +55,14 @@
 
 let applePayPaymentRequest = {
     countryCode: jQuery('#billing_country option:selected').val(),
-    currencyCode: '<?php echo $currencyCode; ?>',
+    currencyCode: '<?php echo esc_attr($currencyCode); ?>',
     total: {
-        label: '<?php echo $label; ?>',
-        amount: '<?php echo $amount; ?>'
+        label: '<?php echo esc_attr($label); ?>',
+        amount: '<?php echo esc_attr($amount); ?>'
     }
 };
 
-const applePayPublicApiKey = '<?php echo $api_key; ?>';
+const applePayPublicApiKey = '<?php echo esc_attr($api_key); ?>';
 
 try{
     if(applePayAvailable){

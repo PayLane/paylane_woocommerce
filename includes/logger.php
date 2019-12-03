@@ -42,10 +42,16 @@ class WCPL_Logger
     }
 
     public static function secure(array $data){
-        if(isset($data['hash'])){
-            $data['hash'] = '===SECRET===';
-        }
+        // if(isset($data['hash'])){
+        //     $data['hash'] = '===SECRET===';
+        // }
 
         return $data;
+    }
+
+    public static function jsonifySecure(array $data){
+        $arr = self::secure($data);
+
+        return json_encode($arr);
     }
 }

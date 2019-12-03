@@ -3,5 +3,5 @@
     <div class="paylane-payment-form__text">
         <?php echo __( 'You will be redirected to your bank\'s website payment.', 'wc-gateway-paylane' ); ?>
     </div>
-    <?php echo $banks; ?>
+    <?php echo ($banks); ?>
 </div>
